@@ -15,6 +15,7 @@ import { HomeComponent } from './components/home/home.component';
 import { HeaderComponent } from './components/home/header/header.component';
 import { ArticleAnchorComponent } from './components/home/article-anchor/article-anchor.component';
 import { ArticleViewComponent } from './components/article-view/article-view.component';
+import { ArticleNotFoundComponent } from './components/article-view/article-not-found/article-not-found.component';
 
 // Pipes
 import { SafePipe } from './pipes/safe.pipe';
@@ -26,7 +27,8 @@ import { SafePipe } from './pipes/safe.pipe';
     HeaderComponent,
     ArticleAnchorComponent,
     ArticleViewComponent,
-    SafePipe
+    ArticleNotFoundComponent,
+    SafePipe,
   ],
   imports: [
     BrowserModule,

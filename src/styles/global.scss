@@ -26,3 +26,13 @@ a {
     color: rbga($accent-color, 0.1);
   }
 }
+
+*:not(code, span)::selection {
+  @include color($background-color);
+  @include bg(mat.get-color-from-palette($accent-palette, 300));
+}
+
+code::selection, span::selection {
+  @include color($background-color);
+  @include bg(mat.get-color-from-palette($primary-palette, 100));
+}
