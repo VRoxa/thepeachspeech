@@ -34,7 +34,11 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["showdown", "highlight.js"]
+            "allowedCommonJsDependencies": [
+              "highlight.js",
+              "markdown-it-anchor",
+              "markdown-it-table-of-contents"
+            ]
           },
           "configurations": {
             "production": {

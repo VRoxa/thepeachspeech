@@ -1,0 +1,101 @@
+@use '@angular/material' as mat;
+
+@import 'src/styles/palettes.scss';
+@import 'src/styles/article.scss';
+
+.container {
+  min-height: 100%;
+}
+
+.content {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 15%;
+  min-height: 100%;
+}
+
+.article-content {
+  margin: 0 25%;
+  width: 50%;
+  padding-bottom: 5rem;
+
+  .article-header {
+    width: 100%;
+    margin-bottom: 2.5rem;
+
+    h1 { 
+      font-size: 3rem; 
+      margin-bottom: 0;
+    }
+
+    .subtitle {
+      color: rgba($contrast-color, 0.65);
+    }
+  }
+
+  .article-frame {
+    width: 100%;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+}
+
+.button-container {
+  position: fixed;
+  height: 0%;
+  margin: 0;
+
+  .home-button {
+    font-size: 1.2rem;
+  }
+}
+
+::-webkit-scrollbar {
+  height: calc(10px + 1rem);
+  width: calc(10px + 1rem);
+}
+
+::-webkit-scrollbar-track {
+  background: $background-color;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $primary-color;
+  border-radius: 99999px;
+  border: 0.5rem solid transparent;
+  background-clip: padding-box;
+
+  &:hover {
+    background-color: mat.get-color-from-palette($primary-palette, 700);
+    border-radius: 99999px;
+    border: 0.5rem solid transparent;
+    background-clip: padding-box;
+  }
+}
+
+::-webkit-scrollbar-corner {
+  background-color: $background-color;
+}
+
+@media (max-width: 992px) {
+  .article-content {
+    margin-left: 1rem;
+    width: calc(100% - 1rem);
+    white-space: pre-line;
+
+    .subtitle {
+      margin-bottom: 1rem;
+    }
+  }
+
+  ::ng-deep p {
+    margin-block-end: 0;
+    margin-block-start: 0;
+  }
+
+  .sidenav {
+    width: 0%;
+  }
+}

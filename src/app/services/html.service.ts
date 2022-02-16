@@ -29,7 +29,7 @@ export class HtmlService {
     return this.http
       .get(uri, { responseType: 'text' })
       .pipe(
-        map(parser.render),
+        map(content => parser.render(content)),
         highlightInlineCode,
         replaceTocLinks
       );

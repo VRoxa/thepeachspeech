@@ -16,6 +16,9 @@ import { HeaderComponent } from './components/home/header/header.component';
 import { ArticleAnchorComponent } from './components/home/article-anchor/article-anchor.component';
 import { ArticleViewComponent } from './components/article-view/article-view.component';
 
+// Pipes
+import { SafePipe } from './pipes/safe.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,6 +26,7 @@ import { ArticleViewComponent } from './components/article-view/article-view.com
     HeaderComponent,
     ArticleAnchorComponent,
     ArticleViewComponent,
+    SafePipe
   ],
   imports: [
     BrowserModule,
