@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+@import './palettes.scss';
+
+@mixin bg($color) { background-color: $color;}
+@mixin color($color) { color: $color; }
+
+.primary { @include color($primary-color); }
+.accent { @include color($accent-color); }
+.bg-primary { @include bg($primary-color); }
+.bg-accent { @include bg($accent-color); }
+
+.title {
+  font-family: Montserrat, sans-serif;
+}
+
+.full-w { width: 100%; }
+.full-h { height: 100%; }
+
+a {
+  color: $accent-color;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    color: rbga($accent-color, 0.1);
+  }
+}
