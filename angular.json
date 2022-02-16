@@ -33,7 +33,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["showdown", "highlight.js"]
           },
           "configurations": {
             "production": {

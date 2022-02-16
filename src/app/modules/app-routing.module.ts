@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
+import { ArticleViewComponent } from '../components/article-view/article-view.component';
+import { HomeComponent } from '../components/home/home.component';
 
 const routes: Routes = [
+  { path: ':link', component: ArticleViewComponent },
   { path: '', component: HomeComponent },
 ];
 
