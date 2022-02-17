@@ -6,17 +6,19 @@ import { ArticlesService } from 'src/app/services/articles.service';
 import { map } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { valueFromEvent } from 'src/app/utils/rx-factories';
+import { RoutingService } from 'src/app/services/routing.service';
 
 interface ArticlesTreeNode {
   name: string;
-  url?: string;
   children?: ArticlesTreeNode[];
+  article?: Article;
 }
 
 interface ArticlesTreeFlatNode {
   expandable: boolean;
   name: string;
   level: number;
+  article?: Article;
 }
 
 const projectArticles = (articles: Article[]): ArticlesTreeNode[] => {
@@ -29,9 +31,12 @@ const projectArticles = (articles: Article[]): ArticlesTreeNode[] => {
     return formatter.format(date);
   }
 
+  // Replace reduce function to groupBy when publicly released
+  // https://github.com/tc39/proposal-array-grouping
   return articles
-    .reduce<ArticlesTreeNode[]>((acc, { title, url, date }) => {
-      const node = { name: title, url: `/${url}` };
+    .reduce<ArticlesTreeNode[]>((acc, article: Article) => {
+      const { title: name, date } = article;
+      const node = { name, article };
       const key = formatDate(date!);
 
       const existing = acc.find(({ name }) => name === name);
@@ -58,12 +63,13 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
     ({ expandable }) => expandable,
   );
 
-  private treeFlattener = new MatTreeFlattener(
+  private treeFlattener = new MatTreeFlattener<ArticlesTreeNode, ArticlesTreeFlatNode>(
     // Transformer, projects ArticlesTreeNode into ArticlesTreeFlatNode
-    ({ name, children }: ArticlesTreeNode, level: number) => ({
+    ({ name, children, article }, level) => ({
       expandable: !!children,
       name: `${name} ${!!children ? `(${children.length})` : ''}`,
-      level
+      level,
+      article: article!
     }),
     // getLevel
     ({ level }) => level,
@@ -77,11 +83,11 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
   public nodes!: ArticlesTreeNode[];
 
   constructor(
-    private service: ArticlesService,
-    private router: Router) { }
+    private articlesService: ArticlesService,
+    private routingService: RoutingService) { }
 
   ngOnInit(): void {
-    this.service.getArticles()
+    this.articlesService.getArticles()
       .pipe(map(projectArticles))
       .subscribe(nodes => {
         this.nodes = nodes;
@@ -105,12 +111,8 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
     this.dataSource.data = nodes;
   }
 
-  public enrouteArticle = (name: string) => {
-    const { url } = this.nodes
-      .flatMap(node => node.children!)
-      .find(({ name: n }) => n === name)!;
-
-    this.router.navigate([url], { relativeTo: this.router.routerState.root });
+  public enrouteArticle = (article: Article) => {
+    this.routingService.enrouteArticle(article);
   }
 
   public hasChild = (_: number, { expandable }: ArticlesTreeFlatNode) => expandable;

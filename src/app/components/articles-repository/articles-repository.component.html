@@ -9,7 +9,9 @@
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
   
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-      <a class="article-link" (click)="enrouteArticle(node.name)">{{ node.name }}</a>
+      <div class="node-content">
+        <peach-article-anchor [article]="node.article"></peach-article-anchor>
+      </div>
     </mat-tree-node>
   
     <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>

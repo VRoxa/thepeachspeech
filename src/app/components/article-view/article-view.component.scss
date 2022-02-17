@@ -52,33 +52,6 @@
   }
 }
 
-::-webkit-scrollbar {
-  height: calc(10px + 1rem);
-  width: calc(10px + 1rem);
-}
-
-::-webkit-scrollbar-track {
-  background: $background-color;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: $primary-color;
-  border-radius: 99999px;
-  border: 0.5rem solid transparent;
-  background-clip: padding-box;
-
-  &:hover {
-    background-color: mat.get-color-from-palette($primary-palette, 700);
-    border-radius: 99999px;
-    border: 0.5rem solid transparent;
-    background-clip: padding-box;
-  }
-}
-
-::-webkit-scrollbar-corner {
-  background-color: $background-color;
-}
-
 @media (max-width: 992px) {
   .article-content {
     margin-left: 1rem;
