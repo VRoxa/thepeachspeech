@@ -11,7 +11,7 @@ export class ArticleAnchorComponent {
   @Input() public article!: Article;
 
   public get link(): string {
-    return this.article.url!;
+    return 'article/' + this.article.url!;
   }
 
 }

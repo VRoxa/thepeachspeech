@@ -5,6 +5,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   exports: [
@@ -12,7 +13,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatTreeModule,
     MatIconModule,
     MatButtonModule,
-    MatChipsModule
+    MatChipsModule,
+    MatInputModule
   ]
 })
 export class MaterialModule { }

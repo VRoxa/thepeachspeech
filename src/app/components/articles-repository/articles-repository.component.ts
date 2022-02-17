@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Router } from '@angular/router';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { map } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
+import { valueFromEvent } from 'src/app/utils/rx-factories';
 
 interface ArticlesTreeNode {
   name: string;
@@ -28,12 +29,6 @@ const projectArticles = (articles: Article[]): ArticlesTreeNode[] => {
     return formatter.format(date);
   }
 
-  const includeChildrenCounter = (node: ArticlesTreeNode) => {
-    const { length } = node.children!;
-    const name = `${node.name} (${length})`;
-    return {...node, name};
-  }
-
   return articles
     .reduce<ArticlesTreeNode[]>((acc, { title, url, date }) => {
       const node = { name: title, url: `/${url}` };
@@ -46,16 +41,17 @@ const projectArticles = (articles: Article[]): ArticlesTreeNode[] => {
       }
 
       return [...acc, { name: key, children: [node] }];
-    }, [])
-    .map(includeChildrenCounter);
+    }, []);
 }
 
 @Component({
-  selector: 'peach-articles-tree',
-  templateUrl: './articles-tree.component.html',
-  styleUrls: ['./articles-tree.component.scss']
+  selector: 'peach-articles-repository',
+  templateUrl: './articles-repository.component.html',
+  styleUrls: ['./articles-repository.component.scss']
 })
-export class ArticlesTreeComponent implements OnInit {
+export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('filter', { static: true }) filter!: ElementRef<HTMLInputElement>;
 
   public treeControl = new FlatTreeControl<ArticlesTreeFlatNode>(
     ({ level }) => level,
@@ -65,8 +61,8 @@ export class ArticlesTreeComponent implements OnInit {
   private treeFlattener = new MatTreeFlattener(
     // Transformer, projects ArticlesTreeNode into ArticlesTreeFlatNode
     ({ name, children }: ArticlesTreeNode, level: number) => ({
-      expandable: !!children && children.length > 0,
-      name,
+      expandable: !!children,
+      name: `${name} ${!!children ? `(${children.length})` : ''}`,
       level
     }),
     // getLevel
@@ -91,6 +87,22 @@ export class ArticlesTreeComponent implements OnInit {
         this.nodes = nodes;
         this.dataSource.data = this.nodes;
       });
+  }
+
+  ngAfterViewInit(): void {
+    valueFromEvent(this.filter.nativeElement).subscribe(this.filterNodes);
+  }
+
+  private filterNodes = (searchValue: string) => {
+    const filterValue = searchValue.toLowerCase();
+    const nodes = this.nodes.map(node => {
+      const filtered = node.children!.filter(({ name }) => name.toLowerCase().includes(filterValue));
+      return { 
+        ...node, 
+        children: filtered
+     };
+    });
+    this.dataSource.data = nodes;
   }
 
   public enrouteArticle = (name: string) => {

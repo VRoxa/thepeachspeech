@@ -50,9 +50,9 @@ export class ArticleViewComponent implements OnInit {
   
   private initializeArticle = (routingUrl: string) => {
     // The router returns the URL with a leading slash.
-    // We need to remove it to get the article URL.
-    // /article-1 -> article-1
-    const url = routingUrl.slice(1);
+    // We need to get the third element of the route, splitting by slash.
+    // /article/article-1 -> [/, /article, article-1] -> article-1
+    const url = routingUrl.split('/')[2];
 
     this.article = void 0;
     this.showFrame = false;

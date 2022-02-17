@@ -1,4 +1,11 @@
+
+<mat-form-field class="filter-input" appearance="outline">
+  <input matInput #filter autocomplete="off">
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+
 <div class="content" *ngIf="nodes">
+
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
   
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
