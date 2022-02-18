@@ -18,12 +18,12 @@
   font-family: Quicksand, sans-serif;
 }
 
-.primary.title {
+.primary.title:not(.no-link) {
   width: fit-content;
   cursor: pointer;
 
   &:hover {
-    color: rgba($primary-color, 0.75);
+    color: mat.get-color-from-palette($primary-palette, 800) !important;
   }
 }
 

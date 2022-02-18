@@ -6,7 +6,7 @@ import { ArticleRouterBase } from 'src/app/components/common/article-router-base
   selector: 'peach-article-tree-node',
   template: `
   <div class="content">
-    <p class="primary title">{{ article.title }}</p>
+    <p class="primary title" [routerLink]="[link]">{{ article.title }}</p>
 
     <mat-chip-list>
       <mat-chip *ngFor="let tag of article!.tags">{{ tag }}</mat-chip>
