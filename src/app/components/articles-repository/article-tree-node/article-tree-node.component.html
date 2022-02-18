@@ -1,0 +1,8 @@
+
+<div class="content">
+  <p class="primary title">{{ article.title }}</p>
+  
+  <mat-chip-list>
+    <mat-chip *ngFor="let tag of article!.tags"> {{ tag }} </mat-chip>
+  </mat-chip-list>
+</div>

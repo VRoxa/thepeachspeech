@@ -38,8 +38,8 @@ const projectArticles = (articles: Article[]): ArticlesTreeNode[] => {
       const { title: name, date } = article;
       const node = { name, article };
       const key = formatDate(date!);
-
-      const existing = acc.find(({ name }) => name === name);
+      
+      const existing = acc.find(({ name }) => name === key);
       if (!!existing) {
         existing.children = [...existing.children!, node];
         return acc;
@@ -82,9 +82,7 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   public nodes!: ArticlesTreeNode[];
 
-  constructor(
-    private articlesService: ArticlesService,
-    private routingService: RoutingService) { }
+  constructor(private articlesService: ArticlesService) { }
 
   ngOnInit(): void {
     this.articlesService.getArticles()
@@ -109,10 +107,6 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
      };
     });
     this.dataSource.data = nodes;
-  }
-
-  public enrouteArticle = (article: Article) => {
-    this.routingService.enrouteArticle(article);
   }
 
   public hasChild = (_: number, { expandable }: ArticlesTreeFlatNode) => expandable;

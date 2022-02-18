@@ -17,6 +17,7 @@ import { ArticleAnchorComponent } from './components/home/article-anchor/article
 import { ArticleViewComponent } from './components/article-view/article-view.component';
 import { ArticleNotFoundComponent } from './components/article-view/article-not-found/article-not-found.component';
 import { ArticlesRepositoryComponent } from './components/articles-repository/articles-repository.component';
+import { ArticleTreeNodeComponent } from './components/articles-repository/article-tree-node/article-tree-node.component';
 
 // Pipes
 import { SafePipe } from './pipes/safe.pipe';
@@ -30,6 +31,7 @@ import { SafePipe } from './pipes/safe.pipe';
     ArticleViewComponent,
     ArticleNotFoundComponent,
     ArticlesRepositoryComponent,
+    ArticleTreeNodeComponent,
     SafePipe,
   ],
   imports: [

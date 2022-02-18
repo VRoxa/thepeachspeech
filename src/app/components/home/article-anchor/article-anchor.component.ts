@@ -1,21 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Article } from 'src/app/models/article.model';
+import { Component, Input } from '@angular/core';
 import { RoutingService } from 'src/app/services/routing.service';
+import { ArticleRouterBase } from '../../common/article-router-base.component';
+
+export type ScaleFactor = 'small' | 'medium' | 'large';
 
 @Component({
   selector: 'peach-article-anchor',
   templateUrl: './article-anchor.component.html',
   styleUrls: ['./article-anchor.component.scss']
 })
-export class ArticleAnchorComponent implements OnInit {
+export class ArticleAnchorComponent extends ArticleRouterBase {
+  @Input() public scaleFactor: ScaleFactor = 'large';
 
-  @Input() public article!: Article;
-
-  public link!: string;
-
-  constructor(private routingService: RoutingService) { }
-  
-  ngOnInit(): void {
-    this.link = this.routingService.getArticleUrl(this.article);
+  constructor(routingService: RoutingService) { 
+    super(routingService);
   }
 }
