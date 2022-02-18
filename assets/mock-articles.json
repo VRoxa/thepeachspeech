@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Article 1",
+    "url": "article-1",
+    "oneliner": "This is the first mocked article.",
+    "date": "2022-02-02T19:20:23.446Z",
+    "tags": ["demo", "json", "mock"]
+  },
+  {
+    "title": "Article 2 but longer",
+    "url": "article-2",
+    "oneliner": "This is the second mocked article which is longer than the first one.",
+    "date": "2022-02-02T19:20:23.446Z",
+    "tags": ["demo", "json", "typescript"]
+  },
+  {
+    "title": "Article 3 w/ lorem",
+    "url": "article-3",
+    "oneliner": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...",
+    "date": "2021-12-03T19:20:23.446Z",
+    "tags": ["demo", "angular", "mock"]
+  }
+]
