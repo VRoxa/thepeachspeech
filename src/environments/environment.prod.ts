@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  dataUri: '/assets/articles.json',
-  articleBaseUri: '/assets/articles/'
+  dataUri: 'https://vroxa.github.io/thepeachspeech/assets/articles.json',
+  articleBaseUri: 'https://vroxa.github.io/thepeachspeech/assets/articles/'
 };
