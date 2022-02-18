@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "deploy": "ng build --prod --base-href=/thepeachspeech/"
   },
   "private": true,
   "dependencies": {

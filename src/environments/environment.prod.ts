@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  dataUri: '/assets/articles.json',
+  articleBaseUri: '/assets/articles/'
 };

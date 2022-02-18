@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 
-@import './styles/theme.scss';
-@import './styles/global.scss';
+@import '~styles/theme.scss';
+@import '~styles/global.scss';
 
 @include mat.all-component-themes($thepeachspeech-app-theme);
 

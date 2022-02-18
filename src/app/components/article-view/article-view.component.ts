@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, finalize, map, mergeMap, tap } from 'rxjs';
+import { filter, finalize, map, mergeMap, Observable, Subject, tap } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { HtmlService } from 'src/app/services/html.service';
@@ -18,6 +18,8 @@ const throwArticleNotFound = (url: string) => {
 })
 export class ArticleViewComponent implements OnInit {
 
+  public article$: Subject<Article> = new Subject<Article>();
+
   public articleUrl!: string;
   public article?: Article;
   public htmlContent?: string;
@@ -33,6 +35,11 @@ export class ArticleViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.article$.subscribe(article => {
+      this.article = article;
+    });
+
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -62,8 +69,9 @@ export class ArticleViewComponent implements OnInit {
     this.service.getArticles()
       .pipe(
         first(({ url: u }) => u === url),
-        tap(article =>  !!article || throwArticleNotFound(url)),
-        tap(article => this.article = article),
+        tap(article => !!article || throwArticleNotFound(url)),
+        // Propagate article to article subject
+        tap(article => article && this.article$.next(article)),
         mergeMap(article => this.html.getArticleContent(article!)),
         finalize(() => this.fetchingArticle = false)
       ).subscribe(htmlContent => {
