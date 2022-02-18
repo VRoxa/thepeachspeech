@@ -2,7 +2,7 @@ export interface Article {
   title: string;
   url?: string;
   oneliner?: string;
-  date?: Date,
+  date: Date,
   tags?: string[];
 }
 
