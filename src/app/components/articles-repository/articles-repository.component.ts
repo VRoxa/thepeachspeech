@@ -1,12 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Router } from '@angular/router';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { map } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { valueFromEvent } from 'src/app/utils/rx-factories';
-import { RoutingService } from 'src/app/services/routing.service';
 
 interface ArticlesTreeNode {
   name: string;
@@ -106,7 +104,10 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
         children: filtered
      };
     });
-    this.dataSource.data = nodes;
+
+    this.dataSource.data = nodes.filter(
+      ({ children }) => !!children && children.length > 0
+    );
   }
 
   public hasChild = (_: number, { expandable }: ArticlesTreeFlatNode) => expandable;

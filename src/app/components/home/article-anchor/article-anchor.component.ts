@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { RoutingService } from 'src/app/services/routing.service';
-import { ArticleRouterBase } from '../../common/article-router-base.component';
+import { ArticleRouterBase } from 'src/app/components/common/article-router-base.component';
 
 export type ScaleFactor = 'small' | 'medium' | 'large';
 

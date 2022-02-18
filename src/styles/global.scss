@@ -1,16 +1,21 @@
 @use '@angular/material' as mat;
 @import './palettes.scss';
 
-@mixin bg($color) { background-color: $color;}
-@mixin color($color) { color: $color; }
+@mixin bg($color) { background-color: $color !important; }
+@mixin color($color) { color: $color !important; }
 
 .primary { @include color($primary-color); }
 .accent { @include color($accent-color); }
 .bg-primary { @include bg($primary-color); }
 .bg-accent { @include bg($accent-color); }
+.bg { @include bg($background-color); }
 
 .title {
   font-family: Montserrat, sans-serif;
+}
+
+.app-font {
+  font-family: Quicksand, sans-serif;
 }
 
 .primary.title {
@@ -21,7 +26,6 @@
     color: rgba($primary-color, 0.75);
   }
 }
-
 
 .full-w { width: 100%; }
 .full-h { height: 100%; }

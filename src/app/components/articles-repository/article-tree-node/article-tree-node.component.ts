@@ -1,17 +1,23 @@
 import { Component } from '@angular/core';
 import { RoutingService } from 'src/app/services/routing.service';
-import { ArticleRouterBase } from '../../common/article-router-base.component';
+import { ArticleRouterBase } from 'src/app/components/common/article-router-base.component';
 
 @Component({
   selector: 'peach-article-tree-node',
-  templateUrl: './article-tree-node.component.html',
-  styleUrls: ['./article-tree-node.component.scss']
+  template: `
+  <div class="content">
+    <p class="primary title">{{ article.title }}</p>
+
+    <mat-chip-list>
+      <mat-chip *ngFor="let tag of article!.tags">{{ tag }}</mat-chip>
+    </mat-chip-list>
+  </div>
+  `,
+  styles: [`.content { margin-bottom: 2rem; }`]
 })
 export class ArticleTreeNodeComponent extends ArticleRouterBase {
-  
-  constructor(routingService: RoutingService) { 
+
+  constructor(routingService: RoutingService) {
     super(routingService);
   }
 }
-
-
