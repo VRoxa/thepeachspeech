@@ -17,10 +17,11 @@
 }
 
 ::ng-deep pre {
+    font-size: 0.9rem;
     border-radius: 5px;
     border: 1px solid #474851;
     padding: 1rem;
-    width: fit-content;
+    width: calc(100% - 2rem);
 }
 
 ::ng-deep code {
@@ -132,5 +133,13 @@
         width: calc(100% - 2rem);
         margin-inline-end: 0;
         margin-inline-start: 0;
+
+        p {
+            line-height: 1rem;
+        }
+    }
+
+    ::ng-deep pre {
+        width: fit-content;
     }
 }
