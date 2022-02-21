@@ -6,6 +6,10 @@
     Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-license.org/
 */
 
+::ng-deep p {
+    line-height: 1.5rem;
+}
+
 ::ng-deep ul li::marker {
     content: "»  ";
     font-size: 1.1rem;

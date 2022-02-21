@@ -26,6 +26,6 @@ const highlight = (str: string, lang: string): string => {
 
 export const parser = markdownParserFactory({ highlight })
   .use(taskLists, { label: true, labelAfter: true, lineNumber: true })
-  .use(toc, { markerPattern: /^\[TOC\]/im, includeLevel: [1, 2, 3] })
+  .use(toc, { markerPattern: /^\[TOC\]/im, includeLevel: [1, 2, 3, 4, 5] })
   .use(anchors)
   .use(attrs);
