@@ -85,7 +85,7 @@ The `setup` function returns the result `Repository` object asynchronously.
 
 #### Accessing the repository files
 
-Before anything else, I create the `FileAccess` class, to abstract any file access into the repository. It uses trees and blobs to read and write from and to the repository.
+Before anything else, I created the `FileAccess` class, to abstract any file access into the repository. It uses trees and blobs to read and write from and to the repository.
 
 ```typescript
 // file-access.ts
@@ -111,7 +111,7 @@ export class FileAccess {
 }
 ```
 
-Reading files from the repository is fairly easy. Assuming we read from the working tree at the *master* branch, we get the tree from it (`getTree` function). Then, we need to find the tree entry by the given path. At this point, we can assume that the tree entry is a blob (it could be any value from the [`FILEMODE` enum](https://www.nodegit.org/api/tree_entry#FILEMODE)). Having the tree entry, we can get the actual blob object by the tree entry identifier, then read it as `string`.
+Reading files from the repository is fairly easy. Assuming we read from the working tree at the *master* branch, we get the latest commit tree from it (`getTree` function). Then, we need to find the tree entry by the given path. At this point, we can assume that the tree entry is a blob (it could be any value from the [`FILEMODE` enum](https://www.nodegit.org/api/tree_entry#FILEMODE)). Having the tree entry, we can get the actual blob object by the tree entry identifier, then read it as `string`.
 
 When it comes to writing, things get a bit more serious.  
 My first attempt seemed promising…
@@ -145,7 +145,7 @@ The version above throws this cryptic error when trying to update the `articles.
 
 > `Error: failed to insert entry: invalid name for a tree entry - src/assets/articles.json`
 
-Okay, *what went wrong*, then? Well, turns out you cannot insert a blob object with a full path, it must be a file name. So, we have to modify the tree of the folder we want to point to. First, let’s write a function that gets the folder tree.
+Okay, *what went wrong*, then? Well, turns out you cannot insert a blob object with a full path, **it must be a file name**. So, we have to modify the tree of the folder we want to point to. First, let’s write a function that gets the folder tree.
 
 ```typescript
 // file-access.ts
@@ -208,7 +208,8 @@ export class FileAccess {
 }
 ```
 
-Before anything else, we need to filter the tree entries. Some of them are pointers to blob objects, but only want to look for actual trees. We are now able to get the tree which satisfies our folder path.
+Before anything else, we need to filter the tree entries. Some of them are pointers to blob objects, but I only want to look for actual trees.  
+We are now finally able to get the tree which satisfies our folder path.
 
 The `addOrUpdateFile` function barely changes: the full path is split into the folder path and the file name and the `Treebuilder` is now created from the tree we find using the `getTreeAt` function. And, of course, the `insert` function now takes the file name as the first argument – that’s the whole point of the update.
 
@@ -312,7 +313,7 @@ The `push` function throws an expected error,
 >   `errorFunction: 'Remote.push'`  
 > `}`
 
-Okay, so we have to provide the credentials to access the repository remotely. The `Remote.push` function expects a second argument, the `PushOptions`. We can specify a credentials callback there.
+Okay, so we have to provide the credentials to access the repository remotely. The `Remote.push` function expects a second argument, the `PushOptions`, which is used to specify a credentials callback – among many other things.
 
 ```typescript
 // repository-manager.ts
@@ -350,8 +351,8 @@ There are some posts around the web with the very same issue – including *node
 >
 > **[johnhaley81](https://github.com/johnhaley81)**
 
-Well, in my case, trying `Cred.userpassPlaintextNew` with my actual GitHub username and password didn’t work. However, I was previously trying to authenticate via SSH, while opening the repository via HTTPS. So I gave SSH another try authenticating with SSH key this time.  
-I generated both public and private keys and stored in a `keys` folder.
+Well, in my case, trying `Cred.userpassPlaintextNew` with my actual GitHub username and password didn’t work. However, I was previously trying to authenticate via SSH, while opening the repository via HTTPS. So I gave SSH another try authenticating with the SSH key this time.  
+I generated both public and private keys and I stored them in a `keys` folder.
 
 ```typescript
 // credentials.ts
@@ -417,24 +418,24 @@ push = async () => {
 }
 ```
 
-And, of course, the `repositoryUrl` now has to change to SSH version `git@github.com:VRoxa/thepeachspeech.git`.  
+And, of course, the `repositoryUrl` now has to change to the SSH version `git@github.com:VRoxa/thepeachspeech.git`.  
 Seems alright… But a bitter truth awaits.
 
 ### Stepping back - (un)Realizing how Git trees work
 
 Let’s get back to the `commit` function. The `commit` function was creating a commit using the tree’s `Oid` returned by the `addOrUpdateFile` function, which represents the changes to commit. It felt okay to me. Well, it’s very far from being okay.  
-Taking a closer look to the created commit, it has the modified (or created) file; good. However, it removes the rest of the files in the working tree. In my understanding, the returned tree only has the change we made, ignoring every other file – because we just retrieved the tree at the target folder. This results in the removal of the rest of files in the *diff*.
+Taking a closer look to the created commit, it has the modified (or created) file; good. However, it removes the rest of the files in the working tree. In my understanding, the returned tree has only the change we made, ignoring every other file – because we just retrieved the tree at the target folder. This results in the removal of the rest of the files in the *diff*.
 
 After searching and trying, I found nothing. The documentation doesn’t help that much.  
-Using the “base tree” (`const tree = this.repository.getBranchCommit('master').then(head => head.getTree());`) everything is working, but we’ve just seen how we can only insert a blob as a file name (I am sure this has to have an easy fix, but it’s totally undocumented).  
+Using the “base tree” (`const tree = await this.repository.getBranchCommit('master').then(head => head.getTree());`) everything is working, but we’ve just seen how we can only insert a blob as a file name (I am sure this has to have an easy fix, but it’s totally undocumented).  
 Using the folder tree to bulk the changes and committing the “base tree” results in an empty commit (without any change), unsusprisingly.
 
 #### A bitter conclusion
 
 I have to simplify the solution a bit – rather that trying to understand the *ins* and *outs* of Git as if I was Linus Torvalds.
 
-Starting by cloning the repository remotely as a non-bare repository allows my to read and write files like a normal human being. With the standard Node’s file system, this task is really trivial.  
-Once the `addOrUpdateFile` is done, I still need a tree representing the current working tree with those changes. Using the “base tree” as it is produces the exact same result: an empty commit.
+Starting by cloning the repository remotely as a non-bare repository allows me to read and write files like a normal human being. With the standard Node’s file system, this task is really trivial.  
+Once the `addOrUpdateFile` is done, I still need a tree representing the current working tree with those changes. Using the “base tree” as it is produces the exact same result: **an empty commit**.
 
 I am thinking of switching to another tool to manage all *offline* (local) changes.  
 There are some alternatives out there, and [simple-git](https://github.com/steveukx/git-js) seems promising…
