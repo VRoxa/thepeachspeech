@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "deploy": "ng build --prod --base-href=/thepeachspeech/"
+    "deploy": "ng build --prod --base-href=/thepeachspeech/",
+    "testing": "ng build --configuration production --base-href=/thepeachspeech/ && copy dist\\thepeachspeech\\index.html dist\\thepeachspeech\\404.html"
   },
   "private": true,
   "dependencies": {

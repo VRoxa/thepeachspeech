@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+src/assets/mock-articles.json
+src/assets/articles/article-1.md
