@@ -3,7 +3,22 @@
     "title": "The articles tooling",
     "oneliner": "Building a tooling system to upload article files and metadata automatically using Git libraries.",
     "url": "the-articles-tooling",
-    "date": "Mon Feb 21 2022",
-    "tags": ["git", "node", "typescript"]
+    "date": "2022-02-20T23:00:00.000Z",
+    "tags": [
+      "git",
+      "node",
+      "typescript"
+    ]
+  },
+  {
+    "filePath": "C:\\Users\\esvdlr\\Documents\\peach-articles\\The articles tooling #2.md",
+    "title": "The articles tooling #2",
+    "oneliner": "After the nodegit disaster, let's find another solution to efectively work with the remote repository",
+    "url": "the-articles-tooling-2",
+    "tags": [
+      "git",
+      "node",
+      "typescript"
+    ]
   }
 ]
