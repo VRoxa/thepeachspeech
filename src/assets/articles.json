@@ -12,7 +12,6 @@
     "filePath": "C:\\Users\\esvdlr\\Documents\\peach-articles\\The articles tooling.md"
   },
   {
-    "filePath": "C:\\Users\\esvdlr\\Documents\\peach-articles\\The articles tooling #2.md",
     "title": "The articles tooling #2",
     "oneliner": "After the nodegit disaster, let's find another solution to efectively work with the remote repository",
     "url": "the-articles-tooling-2",
@@ -21,6 +20,6 @@
       "node",
       "typescript"
     ],
-    "date": null
+    "date": "2022-02-24T23:00:00.000Z"
   }
 ]
