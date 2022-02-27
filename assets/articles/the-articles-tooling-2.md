@@ -118,7 +118,7 @@ export const createCommit = async (message: string) => {
 
 ### Accessing repository files
 
-As I said, I discarded the idea of working with blobs and trees. It sounds fancy and exciting, but I don’t want my hair to fall off too early trying to explore these obscure topics (yet?). Accessing the files is as easy as use any CRUD operation on files is in *node* using the `fs` module.
+As I said, I discarded the idea of working with blobs and trees. It sounds fancy and exciting, but I don’t want my hair to fall off too early trying to explore these obscure topics (yet?). Accessing the files is as easy as to use any CRUD operation on files is in *node* using the `fs` module.
 
 ```typescript
 // file-access.ts
@@ -234,4 +234,4 @@ There is no user interaction at the moment, though.
 
 Implementing the user interface as a command-line application is the next step. Some time ago I found this amazing library called [ink](https://github.com/vadimdemedes/ink). This library offers a React development experience but rendering the UI components directly into the console. It provides some pre-built hooks to manage the typical *stdin*, *stdout* and *stderr* channels and the application itself – to kill the current process, which is the only thing it supports for now.
 
-We’ll see how it goes very early.
+We’ll see how it goes very soon.
