@@ -21,5 +21,17 @@
       "typescript"
     ],
     "date": "2022-02-24T23:00:00.000Z"
+  },
+  {
+    "title": "The dialog problem",
+    "oneliner": "Exposing why the Angular Material dialog type system is a problem and providing a pretty straightforward solution to that.",
+    "url": "the-dialog-problem",
+    "tags": [
+      "angular",
+      "angular material",
+      "typescript",
+      "refactoring"
+    ],
+    "date": "2022-02-28T18:51:30.092Z"
   }
 ]
