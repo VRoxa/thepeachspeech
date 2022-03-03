@@ -1,7 +1,9 @@
 [
   {
     "title": "The articles tooling",
+    "title_es": "La herramienta de artículos",
     "oneliner": "Building a tooling system to upload article files and metadata automatically using Git libraries.",
+    "oneliner_es": "Implementando una herramienta para subir artículos y sus datos automáticamente usando librerías de Git.",
     "url": "the-articles-tooling",
     "date": "2022-02-20T23:00:00.000Z",
     "tags": [
@@ -13,7 +15,9 @@
   },
   {
     "title": "The articles tooling #2",
-    "oneliner": "After the nodegit disaster, let's find another solution to efectively work with the remote repository",
+    "title_es": "La herramienta de artículos #2",
+    "oneliner": "After the nodegit disaster, let's find another solution to efectively work with the remote repository.",
+    "oneliner_es": "Despúes del desastre de nodegit, vamos a encontrar otra solución para trabajar con el repositorio remoto de forma efectiva.",
     "url": "the-articles-tooling-2",
     "tags": [
       "git",
@@ -24,7 +28,9 @@
   },
   {
     "title": "The dialog problem",
+    "title_es": "El problema del modal",
     "oneliner": "Exposing why the Angular Material dialog type system is a problem and providing a pretty straightforward solution to that.",
+    "oneliner_es": "Exponiendo por qué el sitema de tipos del modal de Angular Material es un problema y dándole una solución sencilla.",
     "url": "the-dialog-problem",
     "tags": [
       "angular",
