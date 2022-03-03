@@ -19,15 +19,25 @@ export class HomeComponent implements OnInit {
 
   public articles$!: Observable<Article[]>;
 
-  constructor(private service: ArticlesService) { }
+  constructor(
+    private translateService: TranslateService,
+    private service: ArticlesService) { }
 
   ngOnInit(): void {
-    // Takes the first three most recent articles
-    this.articles$ = this.service.getArticles()
+    this.getArticles();
+
+    this.translateService
+      .onLangChange
+      .subscribe(this.getArticles);
+  }
+
+  private getArticles = () => {
+    this.articles$ = this.service
+      .getArticles()
       .pipe(
         map(orderByDateDesc),
+        // Takes the first three most recent articles
         map(articles => articles.slice(0, 3))
       );
   }
-
 }

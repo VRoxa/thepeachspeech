@@ -25,6 +25,8 @@ import { LanguageToggleComponent } from './components/common/language-toggle.com
 
 // Pipes
 import { SafePipe } from './pipes/safe.pipe';
+import { IntlDatePipe } from './pipes/intl-date.pipe';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -43,6 +45,8 @@ export function createTranslateLoader(http: HttpClient) {
     RelatedArticlesComponent,
     LanguageToggleComponent,
     SafePipe,
+    IntlDatePipe,
+    CapitalizePipe
   ],
   imports: [
     BrowserModule,
@@ -57,14 +61,6 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient]
       }
     })
-  ],
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (service: ArticlesService) => () => service.fetchArticles(),
-      deps: [ArticlesService],
-      multi: true
-    }
   ],
   bootstrap: [AppComponent]
 })

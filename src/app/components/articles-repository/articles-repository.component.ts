@@ -5,6 +5,7 @@ import { ArticlesService } from 'src/app/services/articles.service';
 import { map } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { valueFromEvent } from 'src/app/utils/rx-factories';
+import { TranslateService } from '@ngx-translate/core';
 
 interface ArticlesTreeNode {
   name: string;
@@ -81,11 +82,17 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
   public nodes!: ArticlesTreeNode[];
 
   constructor(
+    private translateService: TranslateService,
     private articlesService: ArticlesService) { }
+
+  private get locale(): string {
+    const { currentLang: lang } = this.translateService;
+    return lang === 'es' ? 'es-ES' : 'en-US';
+  }
 
   ngOnInit(): void {
     this.articlesService.getArticles()
-      .pipe(map(projectArticles('es-ES')))
+      .pipe(map(projectArticles(this.locale)))
       .subscribe(nodes => {
         this.nodes = nodes;
         this.dataSource.data = this.nodes;

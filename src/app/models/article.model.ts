@@ -7,5 +7,7 @@ export interface Article {
 }
 
 export type ArticleDto = Omit<Article, 'date'> & {
+  title_es: string;
+  oneliner_es: string;
   date: string;
 }
