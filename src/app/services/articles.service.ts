@@ -12,7 +12,6 @@ const mapLanguage = (lang: string) => {
       map(articles => articles.map(article => {
         const title = toSpanish ? article.title_es : article.title;
         const oneliner = toSpanish ? article.oneliner_es : article.oneliner;
-        // console.log(lang, title, oneliner);
         return {...article, title, oneliner};
       }))
     );
@@ -28,16 +27,17 @@ export class ArticlesService {
     private translateService: TranslateService,
     private http: HttpClient
   ) { 
-    this.translateService.onLangChange.subscribe(({ lang }) => {
-      console.log('Language changed!', lang);
-    });
+  }
+
+  private get lang(): string {
+    return this.translateService.currentLang;
   }
 
   public getArticles(): Observable<Article[]> {
     return this.http
       .get<ArticleDto[]>(environment.dataUri)
       .pipe(
-        mapLanguage(this.translateService.currentLang),
+        mapLanguage(this.lang),
         map(articles => {
           return articles.map(({date, ...article}) => ({
             ...article,

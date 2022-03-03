@@ -8,7 +8,6 @@ import { RoutingService } from 'src/app/services/routing.service';
 import { first } from 'src/app/utils/rx-operators';
 
 const throwArticleNotFound = (url: string) => {
-  console.log('throw');
   throw new Error(`Article not found by URL ${url}`)
 }
 

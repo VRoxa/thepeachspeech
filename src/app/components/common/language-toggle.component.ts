@@ -57,7 +57,7 @@ export class LanguageToggleComponent implements OnInit {
 
       const { url } = this.router;
       const targetUrl = url.replace(`/${curr}`, to);
-      this.router.navigate(['/', targetUrl]);
+      this.router.navigate([targetUrl]);
     }
 
     navigate(this.checked);
