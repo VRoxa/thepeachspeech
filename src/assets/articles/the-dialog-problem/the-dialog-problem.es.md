@@ -1,23 +1,23 @@
-I’ve been using Angular regularly for the last three years. Angular is a web framework I feel very comfortable with (clearly, the most) and, on top of that, almost every time I use Angular, I use it with Angular Material.  
-Material offers the components and styling my webs need with no effort from me and it perfectly fits together with Angular, obviously.
+He estado usando Angular regularmente durante los últimos tres años. Angular es un *framework web* con el que me siendo cómodo (el que más, claramente) y, además, casi siempre que uso Angular, lo uso con Angular Material.  
+Material ofrece los componentes y el estilo que mis *webs* necesitan sin ningún tipo de esfuerzo por mi parte, y encaja perfectamente con Angular, obviamente.
 
-> Some will say Material Design is not so trending nowadays. I will keep using it as I am so used to it and it still feels fluent and pretty to me.  
-> Anyways, I’ve never been into web design trends that much.
+> Algunos dirán que Angular Material ya no es tendencia últimamente. Personalmente, voy a seguir usándolo porque ya estoy acostumbrado y me parece basatante fluido y bonito.  
+> De todas formas, nunca he estado mucho por las tendencias de diseño.
 
-The Angular Material feature I like the most is dialogs, clearly. I am not too good at web development, and I am terrible at web design. Hence, the possibility to add value to the web writing some lines of code is awesome. I’d be really frustrated to implement it by myself, learning to pop-up components, backdrops, dealing with *z-index*, focus…
+Sin duda, la funcionalidad que más me gusta de Angular Material son los diálogos. No soy demasiado bueno en desarrollo *web*, y soy un total desastre en diseño *web*. Por tanto, la posibilidad de poner ese valor añadido a la *web* escribiendo sólo unas pocas líneas de código es increíble. Me sentiría realmente frustrado teniendo que implementarlo por mí mismo, aprendiendo cómo abrir componentes flotantes, los *backdrops*, tratando con el *z-index*, los *focus*, …
 
-Figuring out how to properly implement dialogs was a bit tedious in a time where I knew nothing about Angular, Typescript or even HTML and CSS. One day it just clicked in my mind and I undestood the way they work and what you can really (or not) do with them.
+Entender cómo implementar los diálogos correctamente fue un poco tedioso, en un momento en el que no sabía nada sobre Angular, Typescript o incluso HTML y CSS. Un día me hizo *click* en mi mente y entendí la forma en la que trabajan y lo que realmente puedes hacer (o no) con ellos.
 
-> How many times have you faced this error in your browser *devtools* console?  
+> ¿Cuántas veces te has enfrentado a este error en las herramientas de desarrollo de tu navegador?  
 > `ERROR Error: No component factory found for MyDialog.`  
-> `Did you add it to @NgModule.entryComponents?`
+> `Did you add it to @NgModule.entryComponents?`  
 >
-> To be honest, I was trying to reproduce this error to extract the exact error message and I realized that Angular’s `entryComponents` are [deprecated in Angular 13.0.1](https://github.com/angular/angular/blob/master/CHANGELOG.md#core-8) so we will never get this message ever again. How easy would have been my life if this happened before?
+> Siendo honesto, estaba intentando reproducir este mismo error para sacar el mensaje de error y me he dado cuenta de que los `entryComponents` de Angular están [obsoletos en Angular 13.0.1](https://github.com/angular/angular/blob/master/CHANGELOG.md#core-8), así que nunca vamos a volver a ver este mensaje jamás. ¿Qué tan fácil hubiese sido nuestra vida si esto hubiera ocurrido antes?
 
-### The Angular Material dialog type system
+### El sistema de tipos del diálogo de Angular Material
 
-When implementing our dialog component, we have to consider three type arguments: the input data type, the output data type and the dialog component type by itself. These three types will be used when interacting with our dialog from the outside, as consumers.  
-The component(s) who need to open – and interact with – the dialog must know how these three types are bound together.
+Cuando se implementa un diálogo, tenemos que considerar tres argumentos de tipo: el tipo de datos de entrada, el tipo de datos de salida y el tipo del diálogo como tal. Haremos uso de estos tres tipos cuando interactuemos con nuestro diálogo des de fuera, como consumidores.  
+Los componentes que necesiten abrir – e interactuar con – el diálogo deben conocer estos tres tipos y cómo se relacionan.
 
 ```typescript
 // my.component.ts
@@ -28,31 +28,31 @@ export class MyComponent {
   constructor(private dialog: MatDialog) { }
     
   public openDialog = () => {
-    // The dialog's input data
+    // Los datos de entrada del diálogo
     const data = { one: 1 };
     const ref = this.dialog.open(MyDialog, { data });
       
     ref.afterClosed.subscribe(result => {
-      // result of type 'any'
+      // Resultado (result) de tipo 'any'
     });
   }
 }
 ```
 
-Don’t you see anything weird?  
-We, as the dialog consumer, decided what type the `MyDialog` components need as input and received the result of the dialog as `any`, even if the dialog component knows exactly what kind of data is returning back when closing itself.  
-The `MatDialog` (and its `open` function) is not giving any information about the dialog we are about to open. For instance, we could just pass in any object we like and Typescript would be totally fine with it. That’s a really weak type system.
+¿No ves algo raro?  
+Nosotros, como consumidores del diálogo, hemos decidido qué tipo de entrada necesita el componente `MyDialog` y hemos recibido el resultado como un `any`, incluso cuando el componente de diálogo sabe exactamente qué tipo de datos está devolviendo cuando se cierra.  
+El servicio `MatDialog` (y su función `open`) no nos da ninguna información sobre el diálogo que vamos a abrir. Por ejemplo, podríamos pasar cualquier objeto que quisiésemos y a Typescript le parecería perfecto. Esto es un sistema de tipos verdaderamente débil.
 
-I use to type input and output data every time I implement a dialog component to make a clear annotation of what the dialog is and how it works. However, I’d really expect this information to be known by any component that needs to use the dialog.  
-When I am using a dialog I just defined minutes ago, it’s easy to me to make it working… But what about those dialogs I don’t own? Do I have to open the source code of the dialog class to check what it needs? Do I have to include documentation to the dialog class and hope developers are use they way I thought?
+Yo suelo tipar los datos de entrada y salida cada vez que implemento un componente de diálogo para aclarar de qué se trata ese diálogo y cómo funciona. Aún así, me esperaría que esta información de pudiese conocer des de cualquier componente que necesite usar el diálogo.  
+Es fácil trabajar con un diálogo que acabo de definir unos minutos atrás… Pero, ¿y aquellos diálogos que no son míos? ¿Tengo que abrir el código fuente de la clase del diálogo para ver qué necesita? ¿Tengo que incluir documentación sobre la clase del diálogo y cruzar los dedos para que los desarrolladores que vayan a usarlo lo hagan de la forma que he pensado?
 
-Typescript **must** prevent the dialog consumer to mess with the dialog types.  
-This weakness is because of Angular Material ~~inexistent~~ type system. Seriously, why Angular Material is not inferring these types so they have to be satisfied? Isn’t this the whole point of Typescript, after all?
+Typescript **debe** prevenir que el consumidor del diálogo se equivoque con los tipos del mismo.  
+Esta debilidad surge por el ~~inexistente~~ sistema de tipos de Angular Material. En serio, ¿por qué Angular Material no está infiriendo estos tipos para que deban cumplirse? Después de todo, ¿no es de eso de lo que se trata Typescript?
 
-### Refining the type system
+### Refinando el sistema de tipos
 
-The major problem here is that we cannot “extract” the input and output type arguments out of the dialog component type definition. We will never be able to infer these types back to anyone else unless we get those from the dialog.  
-For that, let’s define a base dialog class that exposes the input and output types.
+El mayor problema aquí es que no podemos “extraer” los argumentos de tipo de entrada y salida de la definición de tipo del diálogo (del componente). a menos que los saquemos del diálogo, nunca seremos capaces de inferir esos tipos a nadie.  
+Por ello, vamos a definir una clase base de diálogo que exponga los tipos de entrada y salida. 
 
 ```typescript
 // app-dialog.ts
@@ -66,8 +66,8 @@ export class AppDialog<TParams, TResult> {
 }
 ```
 
-The `AppDialog` has the three types *all-in-one* in its definition.  
-Every future dialog component will have to extend from the `AppDialog` class. The dialog class will be forced to specify what type arguments it expects.
+La clase `AppDialog` tiene los tres tipos en su definición, *todo en uno*.  
+A partir de ahora, todos los componentes de diálogo tendrán que extender de la clase `AppDialog`. Cada clase estará forzada a especificar qué argumentos de tipo necesita.
 
 ```typescript
 // my-dialog.ts
@@ -97,15 +97,15 @@ export class MyDialog extends AppDialog<DialogInputData, DialogOutputData> {
 }
 ```
 
-Now, the `MyDialog` class is exposing its type arguments, but we can’t use this information anywhere…
+Con esto, la clase `MyDialog` está exponiendo sus argumentos de tipo, pero aún no podemos usar esa información en ningún sitio…
 
-We are missing the link between our dialog component and the consumer(s). The `open` function has to be totally overwritten to fit our new type system. There is one key in the Typescript type system usage that makes this possible: the [type inference](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#type-inference-in-conditional-types). Go check it out if you don’t know exactly how it works (I think it will be understood in the example below, anyway).
+Nos falta un enlace entre nuestro diálogo y el consumidor. La función `open` tiene que ser totalmente sobreescrita para acomodarse a nuestro nuevo sistema de tipos. En Typescript, hay una funcionalidad clave en su uso de tipos: la inferencia de tipos ([type inference](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#type-inference-in-conditional-types)). Échale un ojo si no sabes cómo funciona exactamente (aunque creo que se entenderá bien con el siguiente ejemplo).
 
 ```typescript
 // dialog.service.ts
 
-// These two utility types allows us to "extract" the generic type arguments
-// from an AppDialog child class.
+// Estos dos tipos de utilidad nos permiten "extraer" los argumentos de tipo
+// genéricos de una clase hija AppDialog.
 type ParamsOf<T> = T extends AppDialog<infer TParams, any> ? TParams : never;
 type ResultOf<T> = T extends AppDialog<any, infer TResult> ? TResult : never;
 
@@ -116,22 +116,22 @@ type DialogRef<T> = MatDialogRef<T, ResultOf<T>>;
 // @Injectable({...})
 export class DialogService {
   
-  // Inject the original dialog service
+  // Inyectamos el servicio original
   constructor(private dialog: MatDialog) { }
     
   public open = <TDialog extends AppDialog<any, any>>(
-  	type: Constructor<TDialog>,		// Infer the TParams type arg
-    config?: DialogConfig<TDialog>	// Infer the TResult type arg
+  	type: Constructor<TDialog>,		// Inferimos el argumento de tipo TParams
+    config?: DialogConfig<TDialog>	// Inferimos el argumento de tipo TResult
   ): DialogRef<TDialog> => {
-    // We are inferring our types to the MatDialog open function
+    // Ahora estamos infiriendo nuestros tipos a la función open del MatDialog
     return this.dialog.open(type, config);
   }
 }
 ```
 
-As you can see, the `DialogSerice` decorates the `MatDialog` service and exposes a fresh new properly typed `open` function. We haven’t changed anything, the `open` function will behave the same way at runtime but we just gained the type safety experience we expect from Typescript.
+Como puedes ver, el `DialogService` decora el servicio `MatDialog` y expone una nueva función `open` correctamente tipada. No hemos cambiado nada, realmente; la función `open` se comportará del mismo modo en tiempo de ejecución, pero hemos ganado esa experiencia de seguridad que esperamos de Typescript.
 
-From the consumer’s point of view, nothing changes when it makes a good use of the dialog types.
+Des del punto de vista del consumidor, nada cambia cuando se hace un buen uso de los tipos del diálogo.
 
 ```typescript
 // my.component.ts
@@ -139,8 +139,8 @@ From the consumer’s point of view, nothing changes when it makes a good use of
 // @Component({ ... })
 export class MyComponent {
     
-  // DialogService is injected,
-  // instead of the MatDialog service.
+  // El DialogService se injecta,
+  // en vez del servicio MatDialog.
   constructor(private dialog: DialogService) { }
     
   public openDialog = () => {
@@ -148,7 +148,7 @@ export class MyComponent {
     const ref = this.dialog.open(MyDialog, { data });
       
     ref.afterClosed.subscribe(result => {
-      // result of type 'DialogOutputData'
+      // Resultado (result) de tipo 'DialogOutputData'
       const { three } = result;
       // ..
     });
@@ -156,7 +156,7 @@ export class MyComponent {
 }
 ```
 
-> We can see our `DialogService` in action when trying to use unexpected types.
+> Podemos apreciar nuestro `DialogService` “en acción” cuando intentamos usar tipos incorrectos (no esperados).
 >
 > ```typescript
 > // my.component.ts
@@ -169,8 +169,8 @@ export class MyComponent {
 >     // Argument of type 'typeof NotADialogComponent' is not assignable to 
 >     // parameter of type 'new (...args: any[]) => AppDialog<any, any>'.
 >     const ref = this.dialog.open(NotADialogComponent);
-> 
-> 	// Type '{ five: string; }' is not assignable to type 'DialogInputData'.
+>   
+>     // Type '{ five: string; }' is not assignable to type 'DialogInputData'.
 >     const ref = this.dialog.open(SomeDialogComponent, {
 >       data: { five: 'Invalid' }
 >     });
@@ -185,14 +185,14 @@ export class MyComponent {
 >   }
 > }  
 > ```
-> Typescript now complains about trying to open any class that does not extend the `AppDialog` class.  
-> Passing the wrong type as the input data causes a compilation error, as well as declaring the wrong output type.
+> Typescript se queja cuando intentamos “abrir” cualquier clase que no extiende de la clase `AppDialog`.  
+> Pasar los tipos incorrectos como tipos de entrada produce errores de compilación, así como declarar el tipo de salida incorrecto.
 
-#### Final touches
+#### El toque final
 
-Having a new `open` function, we’d better always use the `DialogService` in our application. There are some other functions in the `MatDialog`, though.  
-If we want a consistent interface for our dialog usage, we should avoid injecting both `DialogService` and `MatDialog` services depending on what function we want to call.  
-That’s an easy fix, let’s populate the remaining `MatDialog` functions to the `DialogService`.
+Teniendo una nueva función `open`, sería mejor usar siempre el `DialogService` en nuestra aplicación, pero hay algunas otras funciones en el servicio `MatDialog`.  
+Si queremos una interfaz consistente para nuestro uso de diálogos, deberíamos evitar inyectar ambos servicios (`DialogService` y `MatDialog`) dependiendo de qué función queremos usar.  
+Esto tiene fácil arreglo: vamos a popular las funciones restantes del `MatDialog` al `DialogService`.
 
 ```typescript
 // dialog.service.ts
@@ -225,30 +225,30 @@ export class DialogService {
 }
 ```
 
-There is no excuse to bypass the `DialogService` from now on.
+Ya no hay excusa para saltarnos el `DialogService` a partir de ahora.
 
-> Not all dialog components need input data and output data. If the dialog component doesn’t need some of these two (or both), declare the corresponding type argument as `never`.
+> No todos los componentes de diálogo necesitan datos de entrada y salida. Si el diálogo no necesita alguno de los dos (o ambos), declararemos el argumento de tipo correspondiente como `never`.
 >
 > ```typescript
-> // No input data expected
+> // No se esperan datos de entrada
 > export class MyDialog extends AppDialog<never, DialogOutputData> {...}
 > 
-> // No output data expected
+> // No se esperan datos de salida
 > export class MyDialog extends AppDialog<DialogInputData, never> {...}
 > ```
 
-### Conclusions
+### Conclusiones
 
-I myself haven’t noticed the Angular Material dialog type system problem for a while. On the other hand, although I always felt somehow uncomfortable with it, I used to be just switching views between the dialog implementation and the component back and forth.  
-The whole weakness went noticeable when consuming third party dialog components in my application.
+Yo mismo obvié el problema que tenía el sistema de tipos del diálogo de Angular Material durante un tiempo. Aunque siempre me sentía de alguna forma incómodo con él, estaba acostrumbraado a ir cambiando de vistas entre la implementación del diálogo y el componente que lo usaba.  
+La debilidad del sistema de tipos fue más notable cuando consumí diálogos de terceros en una aplicación.
 
-In my opinion, this `DialogService` thing is not that important to be a library to use by itself, I am just copying from project to project. However, the `MatDialog` type system must be improved – and the `DialogService` approach is just one solution among many others.
+En mi opinión, este `DialogSerive` no es algo tan importante como para ser una librería por sí mismo; de momento, sólo lo estoy copiando de proyecto en proyecto. Aún así, el sistema de tipos de `MatDialog` tiene que que mejorar – y el `DialogService` sólo es una solución entre otras muchas.
 
-I wonder the `MatDialog` types are so weak because Typescript type inference wasn’t included by the time it was implemented – but it’s been a while since Microsoft added this feature to the language.  
-If you pay closer attention to the type system, you will notice it is pretty well-designed internally (that’s why we were able to build the `DialogService`, indeed).
+Me imagino que los tipos del `MatDialog` son tan débiles porque la inferencia de tipos en Typescript no estaba incluida cuando fue desarrollado – pero ya ha pasado tiempo des de que Microsoft añadió esta funcionalidad en el lenguaje.  
+Fijándonos un poco en el sistema de tipos, nos podremos dar cuenta de que está bastante bien diseñado, **internamente** (de hecho, esa es al razón por la que somos capaces de implementar el `DialogService`).
 
-This article focused on dialogs because that’s what I use the most; but this problem also applies to the `MatBottomSheet`, which has a very similar interface.  
-I really hope this article gets obsolete pretty soon, meaning that Google fixed this problem.
+Este artículo está enfocado en los diálogos porque es lo que más uso; pero este problema también aplica al `MatBottomSheet`, que tiene una interfaz muy similar.  
+Realmente, espero que este artículo quede obsoleto muy pronto, lo que segnificaría que Google ha arregaldo el problema.
 
-Exploiting every piece of our language is up to us. Those features are meant to be used and, when it comes to Typescript, we have to ensure a proper typing everywhere when possible.  
-Bugs remain at `any` point.
+Explotar cada parte de nuestro lenguaje es cosa nuestra. Todas esas funcionalidades están puestas para ser usadas y, cuando se trata de Typescript, tenemos que asegurarnos de tiparlo todo adecuadamente, cuando sea posible.  
+*Bugs remain at `any` point*.

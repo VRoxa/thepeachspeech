@@ -1,17 +1,15 @@
-I recently tried to implement my own tooling program to upload articles more easily. I explained how the adventure went [in my latest article](https://vroxa.github.io/thepeachspeech/article/the-articles-tooling) – *spoiler*: not so good. I realized how frustrating working with *nodegit* was, that I switched to another Git library. However, I managed to connect to GitHub to clone, fetch and push authenticating the calls with SSH keys; so I want to still use that bit.
+Recientemente he intentado implementar mi propia herramienta para subir artículos más fácilmente. Ya expliqué cómo fue la aventura en [mi último artículo](https://vroxa.github.io/thepeachspeech/es/article/the-articles-tooling) – *spoiler*: no demasiado bien. Me di cuenta de lo frustrante que era trabajar con *nodegit*, así que he cambiado a otra librería de Git. Aún así, conseguí conectarme a GitHub para clonar, hacer *fetch* y *push* autenticando las llamadas con claves SSH; de modo que aún quiero usar esa parte.
 
-### The final Git solution
+### La solución final de Git
 
-I want to grab all the ~~working~~ code from the last session and put it in a service altogether. This service is going to manage the repository remote access; thus, it’s called `RepositoryManager`. This service is a singleton in my application, it will be initialized on the application start-up.  
-The `setup` function will initialize the `RepositoryManager` after cleaning the repository folder, `clone` the repository and `fetch` the latest changes.
+Quiero recopilar todo aquél código que funcione de la última sesión y ponerlo todo junto en un servicio. Este servicio va a gestionar todo el acceso remoto al repositorio y, por tanto, se llamará `RepositoryManager`. Se trata de un *singleton* en mi aplicación, que será inicializado cuando la aplicación arranque.  
+La función `setup` ahora inicializará el `RepositoryManager` después de limpiar la carpeta local del repositorio, clonará el repositorio y hará *`fetch`* the de los últimos cambios.
 
 ```typescript
 // setup.ts
 const cleanUpEnvironment = (): Promise<void> => {
   return new Promise(resolve => {
-    rimraf(env.repositoryPath, () => {
-      resolve();
-    });
+    rimraf(env.repositoryPath, resolve);
   });
 }
 
@@ -26,7 +24,7 @@ export const setup = async (): Promise<RepositoryManager> => {
 }
 ```
 
-I pulled some environment variables out to be shared along the application, as if it was the typical Angular environment object.
+He sacado algunas variables de entorno fuera para que puedan ser compartidas en toda la aplicación, como si fuera el típico objeto de entorno de Angular.
 
 ```typescript
 // environment.ts
@@ -39,8 +37,8 @@ export default {
 }
 ```
 
-Since the `RepositoryManager` is a singleton, it stores the repository reference internally once it is cloned.  
-I think it’s totally fine, even if the manager is a singleton, every manager should have their own created repository (without sharing it to the outside); having a 1:1 relationship.
+Ya que `RepositoryManager` es un *singleton*, guardará la referencia al repositorio internamente una vez esté clonado.  
+Creo que está totalmente justificado, aunque el gestor (*manager*) sea un *singleton*, cada gestor debería tener su propio repositorio creado (sin exponerlo hacia fuera); teniendo una relación 1:1.
 
 ```typescript
 // repository-manager.ts
@@ -88,16 +86,16 @@ export class RepositoryManager {
 }
 ```
 
-The `getCredentialsCallbacks` function is the exact same thing I had before. The only change I made was to retrieve the SSH keys folder path from the environment object.
+La función `getCredentialsCallback` es exactamente la misma que ya tenía anteriormente. El único cambio aplicado es que ahora obtiene la ruta a la carpeta donde están las claves SSH del objeto de entorno.
 
-#### Commit changes
+#### Hacer *commit* de los cambios
 
-You can tell the `RepositoryManager` has no `commit` function. I’d love it to have one, but that’s exactly what I tried before and roughly failed in the process.  
-I decided to keep it simple. So, I searched *nodegit* alternatives until I found the [simple-git](https://github.com/steveukx/git-js) library. The *simple-git* library wraps Git commands in a **simple** way, which becomes very handy to work in.
+Como se puede ver, el `RepositoryManager` no tiene ninguna función `commit`. Me encantaría que tuviese una, pero eso es exactamente lo que intenté antes y fracasé en el proceso.  
+Decidí hacerlo sencillo, de modo que busqué alternativas a *nodegit* hasta que encontré la librería [simple-git](https://github.com/steveukx/git-js). La librería *simple-git* envuelve los comandos Git de una forma **simple**, lo que los hace muy sencillos de trabajar.
 
-As you may noticed, the `RepositoryManager`'s `clone` function options specify to clone the repository as a **non-bare repository**, so it downloads all the actual files of the repository as well as the *.git* reference folder. Having the source code files makes the thing a lot easier to handle.
+Las opciones de la función `clone` del `RepositoryManager` especifican que se clone el repositorio como un ***non-bare repository***, así que descarga todos los ficheros del repositorio, así como la carpeta *.git*. Tener los ficheros con el código fuente hace las cosas mucho más sencillas de tratar.
 
-I implemented the `createCommit` function, using *simple-git*, which takes a commit message, stages any changed file in the repository and creates a commit. Simple enough.
+He implementado la función `createCommit` usando *simple-git* que toma un mensaje de *commit*, guarda cualquier cambio en el repositorio y crea un *commit*. Suficientemente simple.
 
 ```typescript
 // create-commit.ts
@@ -106,19 +104,19 @@ import git from 'simple-git';
 
 
 export const createCommit = async (message: string) => {
-  // Configures the repository instance to the rpeository path
+  // Configura la instancia del repositorio en la ruta.
   const repository = git(environment.repositoryPath);
     
-  // Stages every file
+  // Guarda cuandlquier cambio
   await repository.add('./*');
-  // Creates the commit
+  // Crea el commit
   await repository.commit(message);
 }
 ```
 
-### Accessing repository files
+### Accesdiendo a los ficheros del repositorio
 
-As I said, I discarded the idea of working with blobs and trees. It sounds fancy and exciting, but I don’t want my hair to fall off too early trying to explore these obscure topics (yet?). Accessing the files is as easy as to use any CRUD operation on files is in *node* using the `fs` module.
+Como he dicho, descarté la idea de trabajar con *blobs* y árboles. Suena muy elegante y excitante, pero no quiero quedarme calvo intentando explorar estos temas tan confusos (¿aún?). Acceder a los ficheros es tan sencillo como usar cualquier operación CRUD sobre los ficheros usando el módulo `fs` de Node.
 
 ```typescript
 // file-access.ts
@@ -164,16 +162,16 @@ export class FileAccess {
 }
 ```
 
-Now I can use the `FileAccess` class to implement the `ArticlesService`. The `ArticlesService` implements the articles’ CRUD operations following a repository pattern (kind of) but targeting files instead of a database – it could be renamed to `ArticlesRepository` but there is another concept of repository in my domain, so I prefer the *service* term, here.
+Ahora ya puedo usar la clase `FileAccess` para implementar el `ArticlesService`. El `ArticlesService` implementa las operaciones CRUD sobre los artículos siguiendo el patrón repositorio (más o menos) pero apuntando a los ficheros en vez de una base de datos – podría ser renombrado a `ArticlesRepository`, pero ya hay otro concepto de “repositorio” es mi dominio, así que prefiero el término “servicio”, aquí.
 
-The `Article` model is extracted from the [site repository](https://github.com/VRoxa/thepeachspeech). It is the “link” from one project to the other and they definitely must be exactly the same.  
-I introduced the `ArticleDto` model, which includes the `filePath` property. The `ArticleDto` is specific for this project and it will be the representation of an article in creation. You can take a look at both models in the [source code](https://github.com/VRoxa/thepeachspeech-tool/blob/master/src/models/article.model.ts).
+El modelo `Article` ha sido extraido del [repositorio de la web](https://github.com/VRoxa/thepeachspeech). Éste es un “vínculo” entre los dos proyectos y definitivamente debe ser el mismo modelo.  
+He introducido el modelo `ArticleDto`, que incluye la propiedad `filePath`. El `ArticleDto` es específico para este proyecto y será la representación de un artículo en creación. Puedes echar un ojo a ambos modelos en el [código fuente](https://github.com/VRoxa/thepeachspeech-tool/blob/master/src/models/article.model.ts).
 
-> Since the `Article` model is shared between the site’s Angular project and the tooling, I should clearly extract the definition to a shared module both projects refer to. However, I don’t mind this too much in my case. It’s just a tiny model I can duplicate and it is not going to be changed at all (or that much).  
-> This is something I would do when working in a more complex domain, for sure.
+> Ya que el modelo `Article` se comparte entre el proyecto de Angular y la herramienta, podría perfectamente extraer esa definición en un módulo compartido al que ambos proyectos hagan referencia. En mi caso, esto no me preocupa demasiado. Sólo es un modelo pequeñísimo y que no va a cambiar tanto.  
+> Esto es algo que sí haría si se tratase de dominio mucho más complejo, por supuesto.
 
-I applied some article concrete logics in the `ArticleService` when dealing the CRUD operations.  
-Even though the service is nothing very exciting to look, I took to opportunity to barely play with the Typescript utility types. You see, the `Article` model has the `date` field, which is a `Date`. The JSON file I have to read the articles from returns a collection of objects that include the `date` field as `string`. I declared the `RawArticle` alias which overrides the `date` field as `string`. The service reads the file as a `RawArticle` collection and maps every element to an `Article`.
+He aplicado lógica concreta de los artículos en el `ArticlesService`.  
+Aunque el servicio no sea muy interesante de ver, he aprovechado la ocasión para jugar un poco con los tipos de utilidad de Typescript. Verás, el modelo `Article` tiene el campo `date`, que es de tipo `Date`. El fichero JSON de dónde se leen los artículos devuelve una colección de objetos que incluyen el campo `date` como un `string`. He declarado el tipo `RawArticle` que sobreescribe el campo `date` como un `string`. El servicio lee el fichero como una colección de `RawArticle` y *mapea* cada elemento a un `Article`. 
 
 ```typescript
 // articles-service.ts
@@ -185,7 +183,8 @@ export class ArticlesService {
   constructor(private fileAccess: FileAccess) { }
     
   getAll = async (): Promise<Article[]> => {
-    // The articlesJsonFilePath is the path of the file in the cloned repository
+      
+    // El articlesJsonFilePath es la ruta del fichero en el respositorio clonado
     const articlesJson = await this.fileAccess.getContent(articlesJsonFilePath);
     const articles: RawArticle[] = JSON.parse(articlesJson);
     return articles.map(article => {
@@ -194,23 +193,23 @@ export class ArticlesService {
     });
   }
 
-  // add, update, delete functions
+  // funciones add, update, delete
 }
 ```
 
-> [Utility types](https://www.typescriptlang.org/docs/handbook/utility-types.html) are the Typescript feature I like the most, no doubts. They are something I always try to add when necessary (I even think I sometimes tend to force myself to use them even when they are not strictly necessary, just for the sake of fun).
+> Los tipos de utilidad ([*utility types*](https://www.typescriptlang.org/docs/handbook/utility-types.html)) son la funcionalidad de Typescript que más me gusta, sin duda. Son algo que siempre intento añadir cuando es necesario (incluso creo que tiendo a forzarme a mí mismo a usarlos a veces, incluso cuando no son estrictamente necesarios, sólo por diversión).
 >
-> The Typescript type system can be widely exploited with utility types (and other type related features) to get mind-blowing solutions. As an example, the `OneOf`, which results in a type where only one field from a given base type is allowed.
+> El sistema de tipos de Typescript puede explotarse mucho con los tipos de utilidad (y otras funcionalidades relacionadas con los tipos) para conseguir soluciones alucinantes. Por ejemplo, el tipo `OneOf`, que resulta en un tipo donde sólo una propiedad de un tipo base es permitida.
 >
 > ```typescript
 > type OneOf<T, K extends keyof T> = {
->   [Key in K]: Pick<Required<T>, Key> & { 
->     [InnerKey in Exclude<K, Key>]?: never; 
->   };
+> [Key in K]: Pick<Required<T>, Key> & { 
+>  [InnerKey in Exclude<K, Key>]?: never; 
+> };
 > }[K];
 > ```
 >
-> So, let’s imagine we want to declare the `PaddingOption` type, which declares a `number` field per side: `top`, `right`, `bottom` and `left`. We want the type to allow one side only at once.
+> Imaginemos que queremos declarar el tipo `PaddingOption`, que declara un campo de tipo `number` por lado: `top` (lado superior), `right` (lado derecho), `bottom` (lado inferior) y `left` (lado izquierdo). Queremos que el tipo sólo permita un lado a la vez.
 >
 > ```typescript
 > type PaddingOptionKeys = 'top' | 'right' | 'bottom' | 'left';
@@ -222,16 +221,16 @@ export class ArticlesService {
 > const option3: PaddingOption = { right: 9, left: 0 }; // Throws compilation error
 > ```
 >
-> Isn’t that cool?  
-> There are some funny (and useful) types to explore out there. I discovered the `OneOf` type in [this article](https://timhwang21.gitbook.io/index/programming/typescript/xor-type#going-beyond-binary).
+> Hay algunos tipos muy divertidos (y útiles) que vale la pena explorar.  
+> Descubrí el tipo `OneOf` en [este artículo](https://timhwang21.gitbook.io/index/programming/typescript/xor-type#going-beyond-binary).
 
-### Next steps
+### Siguientes pasos
 
-*Phew!* So the Git hell is finally done. To be honest, I thought *nodegit* would be totally easier. I’d like to revisit that in the near future and try to understand how Git actually works, learn about Git trees management and so on.  
-Besides that, the solution is working: cloning the latest version of the repository, changing some files, creating the commit and pushing it back to the remote wonderfully.
+*¡Buf!* Al final, el infierno de Git está hecho. Siendo honesto, pensé que *nodegit* sería mucho más fácil. Me gustaría revisitarlo en un futuro e intentar entender cómo trabaja Git y aprender sobre la gestión de los árboles de Git y demás.  
+A parte de eso, la solución funciona: clonar la última versión del repositorio, cambiar algunos ficheros, crear un *commit* y hacer *push* al repositorio remoto.
 
-There is no user interaction at the moment, though.
+De todos modos, no hay ninguna interfaz de usuario, de momento.
 
-Implementing the user interface as a command-line application is the next step. Some time ago I found this amazing library called [ink](https://github.com/vadimdemedes/ink). This library offers a React development experience but rendering the UI components directly into the console. It provides some pre-built hooks to manage the typical *stdin*, *stdout* and *stderr* channels and the application itself – to kill the current process, which is the only thing it supports for now.
+El siguiente paso es implementar la interfaz de usuario como una aplicaciónd de consola. Hace un tiempo encontré una librería increíble llamada [ink](https://github.com/vadimdemedes/ink). Esta librería ofrece una experiencia de desarrollo con React, pero renderizando los componentes de la UI directamente en la consola. Provee algunos *hooks* para gestionar los típìcos canales *stdin*, *stdout* y *stderr* y la aplicación en sí misma – para matar el proceso actual, lo cual es lo único que soporta por ahora.
 
-We’ll see how it goes very soon.
+Veremos cómo va muy pronto.
