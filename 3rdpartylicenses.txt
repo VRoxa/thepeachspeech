@@ -69,6 +69,12 @@ MIT
 @hedgedoc/markdown-it-task-lists
 ISC
 
+@ngx-translate/core
+MIT
+
+@ngx-translate/http-loader
+MIT
+
 entities
 BSD-2-Clause
 Copyright (c) Felix Böhm

@@ -1,0 +1,18 @@
+{
+  "HOME": {
+    "VIEW_ALL": "Ver todos..."
+  },
+  "HEADER": {
+    "LINE1": "Presentado por ",
+    "LINE2": "Blog personal y profesional.",
+    "LINE3": "Intento explicar cosas <em>techie</em> con código."
+  },
+  "VIEW": {
+    "RELATED": "Artículos relacionados"
+  },
+  "404": {
+    "NO_CONTENT": "Ups! Este artículo ya no existe.",
+    "NOT_FOUND": "Ups! Parece que te has perdido.",
+    "HOME": "Déjame guiarte de vuelta"
+  }
+}
