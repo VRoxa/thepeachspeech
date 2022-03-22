@@ -21,7 +21,7 @@
         <header class="article-header">
           <!-- We know the article was found here, cause we fetched the HTML content of it -->
           <h1 class="title primary">{{ article!.title }}</h1>
-          <p class="subtitle">{{ article!.date | intldate }}</p>
+          <p class="subtitle">{{ article!.date | date: 'longDate' }}</p>
           <mat-chip-list>
             <mat-chip *ngFor="let tag of article!.tags"> {{ tag }} </mat-chip>
           </mat-chip-list>
