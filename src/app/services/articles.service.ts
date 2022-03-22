@@ -3,41 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Article, ArticleDto } from '../models/article.model';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { TranslateService } from '@ngx-translate/core';
-
-const mapLanguage = (lang: string) => {
-  const toSpanish = lang === 'es';
-  return (source: Observable<ArticleDto[]>) => {
-    return source.pipe(
-      map(articles => articles.map(article => {
-        const title = toSpanish ? article.title_es : article.title;
-        const oneliner = toSpanish ? article.oneliner_es : article.oneliner;
-        // console.log(lang, title, oneliner);
-        return {...article, title, oneliner};
-      }))
-    );
-  }
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArticlesService {
 
-  constructor(
-    private translateService: TranslateService,
-    private http: HttpClient
-  ) { 
-    this.translateService.onLangChange.subscribe(({ lang }) => {
-      console.log('Language changed!', lang);
-    });
-  }
+  private articles$!: Observable<Article[]>;
 
-  public getArticles(): Observable<Article[]> {
-    return this.http
+  constructor(private http: HttpClient) { }
+
+  public fetchArticles(): void {
+    this.articles$ = this.http
       .get<ArticleDto[]>(environment.dataUri)
       .pipe(
-        mapLanguage(this.translateService.currentLang),
         map(articles => {
           return articles.map(({date, ...article}) => ({
             ...article,
@@ -45,5 +24,9 @@ export class ArticlesService {
           }));
         })
       );
+  }
+
+  public getArticles(): Observable<Article[]> {
+    return this.articles$;
   }
 }

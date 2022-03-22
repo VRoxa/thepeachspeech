@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RoutingService } from 'src/app/services/routing.service';
 import { ArticleRouterBase } from 'src/app/components/common/article-router-base.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'peach-article-tree-node',

@@ -9,9 +9,9 @@ const routes: Routes = [
   { path: ':lang', component: AppComponent, children: [
     { path: 'article/:link', component: ArticleViewComponent },
     { path: 'repository', component: ArticlesRepositoryComponent },
-    { path: '', component: HomeComponent, pathMatch: 'full' },
+    { path: '**', component: HomeComponent, pathMatch: 'full' },
   ]},
-  { path: '**', redirectTo: '/en', pathMatch: 'full' }
+  { path: '**', redirectTo: 'en', pathMatch: 'full' }
 ];
 
 @NgModule({

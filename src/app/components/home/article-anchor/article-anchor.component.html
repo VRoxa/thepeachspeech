@@ -3,7 +3,7 @@
 </h1>
 
 <p class="date">
-  {{ article.date | intldate }}
+  {{ article.date | date: 'longDate' }}
 </p>
 
 <p class="oneliner" [ngClass]="scaleFactor">
