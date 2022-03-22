@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, finalize, map, mergeMap, Subject, Subscription, tap } from 'rxjs';
+import { filter, finalize, map, mergeMap, Observable, Subject, tap } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { HtmlService } from 'src/app/services/html.service';
-import { RoutingService } from 'src/app/services/routing.service';
 import { first } from 'src/app/utils/rx-operators';
 
 const throwArticleNotFound = (url: string) => {
@@ -17,7 +16,7 @@ const throwArticleNotFound = (url: string) => {
   templateUrl: './article-view.component.html',
   styleUrls: ['./article-view.component.scss']
 })
-export class ArticleViewComponent implements OnInit, OnDestroy {
+export class ArticleViewComponent implements OnInit {
 
   public article$: Subject<Article> = new Subject<Article>();
 
@@ -29,18 +28,11 @@ export class ArticleViewComponent implements OnInit, OnDestroy {
   public fetchingArticle!: boolean;
   public showFrame!: boolean;
 
-  private routerSubscription?: Subscription;
-
   constructor(
     private html: HtmlService,
     private service: ArticlesService,
-    private router: Router,
-    private routingService: RoutingService
+    private router: Router
   ) { }
-
-  ngOnDestroy() {
-    this.routerSubscription?.unsubscribe();
-  }
 
   ngOnInit() {
 
@@ -48,7 +40,7 @@ export class ArticleViewComponent implements OnInit, OnDestroy {
       this.article = article;
     });
 
-    this.routerSubscription = this.router.events
+    this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
         map(event => event as NavigationEnd),
@@ -67,7 +59,7 @@ export class ArticleViewComponent implements OnInit, OnDestroy {
     // The router returns the URL with a leading slash.
     // We need to get the third element of the route, splitting by slash.
     // /article/article-1 -> [/, /article, article-1] -> article-1
-    const url = routingUrl.split('/')[3];
+    const url = routingUrl.split('/')[2];
 
     this.article = void 0;
     this.showFrame = false;
@@ -85,9 +77,5 @@ export class ArticleViewComponent implements OnInit, OnDestroy {
       ).subscribe(htmlContent => {
           this.htmlContent = htmlContent;
       });
-  }
-
-  public navigateHome = () => {
-    this.routingService.navigateHome();
   }
 }

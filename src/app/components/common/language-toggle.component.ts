@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { Component } from '@angular/core';
+import { LanguageService } from 'src/app/services/language.service';
 
 @Component({
   selector: 'peach-language-toggle',
@@ -9,7 +8,9 @@ import { TranslateService } from '@ngx-translate/core';
       <button mat-icon-button 
         (click)="toggle()"
       >
-        <mat-icon class="icon">language</mat-icon>
+        <mat-icon class="icon">
+          language
+        </mat-icon>
       </button>
       <img
         [src]="checked ? 'assets/img/uk.png' : 'assets/img/sp.png'"
@@ -29,37 +30,23 @@ import { TranslateService } from '@ngx-translate/core';
   `]
 })
 
-export class LanguageToggleComponent implements OnInit {
+export class LanguageToggleComponent {
+
+  private language: string;
 
   // true -> English
   // false -> Spanish
-  public checked!: boolean;
+  public checked: boolean;
 
-  constructor(
-    private router: Router,
-    private translateService: TranslateService) { }
-
-  ngOnInit() {
-    const changeLanguage = (lang: string) => {
-      this.checked = lang === 'en';
-    }
-
-    changeLanguage(this.translateService.currentLang);
-    this.translateService.onLangChange.subscribe(({ lang }) => {
-      changeLanguage(lang);
-    });
+  constructor(private languageService: LanguageService) { 
+    this.language = languageService.currentLanguage;
+    this.checked = this.language === 'en';
   }
 
   public toggle = () => {
-    const navigate = (fromEnglish: boolean) => {
-      const curr = fromEnglish ? 'en' : 'es';
-      const to = fromEnglish ? 'es' : 'en';
-
-      const { url } = this.router;
-      const targetUrl = url.replace(`/${curr}`, to);
-      this.router.navigate(['/', targetUrl]);
-    }
-
-    navigate(this.checked);
+    this.checked = !this.checked;
+    this.languageService.currentLanguage = this.language === 'en' 
+      ? 'es' 
+      : 'en';
   }
 }

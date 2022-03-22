@@ -19,9 +19,9 @@ interface ArticlesTreeFlatNode {
   article?: Article;
 }
 
-const projectArticles = (locale: string) => (articles: Article[]): ArticlesTreeNode[] => {
+const projectArticles = (articles: Article[]): ArticlesTreeNode[] => {
   const formatDate = (date: Date) => {
-    const formatter = new Intl.DateTimeFormat(locale, {
+    const formatter = new Intl.DateTimeFormat('default', {
       month: 'long',
       year: 'numeric'
     });
@@ -80,12 +80,11 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   public nodes!: ArticlesTreeNode[];
 
-  constructor(
-    private articlesService: ArticlesService) { }
+  constructor(private articlesService: ArticlesService) { }
 
   ngOnInit(): void {
     this.articlesService.getArticles()
-      .pipe(map(projectArticles('es-ES')))
+      .pipe(map(projectArticles))
       .subscribe(nodes => {
         this.nodes = nodes;
         this.dataSource.data = this.nodes;

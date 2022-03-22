@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { RoutingService } from 'src/app/services/routing.service';
 import { ArticleRouterBase } from 'src/app/components/common/article-router-base.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'peach-article-tree-node',
   template: `
   <div class="content">
-    <p class="primary title" (click)="enrouteArticle()">{{ article.title }}</p>
+    <p class="primary title" [routerLink]="[link]">{{ article.title }}</p>
 
     <mat-chip-list>
       <mat-chip *ngFor="let tag of article!.tags">{{ tag }}</mat-chip>

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { map, Observable } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { ArticlesService } from 'src/app/services/articles.service';
