@@ -1,19 +1,19 @@
 
 <div class="container">
   <div class="content-not-found" *ngIf="!!article; else noArticle">
-    <p><strong>{{ '404.NO_CONTENT' | translate }}</strong></p>
+    <p><strong>Whoops! This article doesn't exist anymore.</strong></p>
   </div>
   
   <button mat-raised-button 
     class="home-button"
     (click)="navigateHome()"
   >
-    {{ '404.HOME' | translate }}
+    Let me guide you back
   </button>
   
   <ng-template #noArticle>
     <div class="article-not-found">
-      <p><strong>{{ '404.NOT_FOUND' | translate }}</strong></p>
+      <p><strong>Whoops! Lost your way.</strong></p>
     </div>
   </ng-template>
 

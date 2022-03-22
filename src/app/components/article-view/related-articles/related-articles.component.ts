@@ -12,7 +12,7 @@ const areRelatedArticles = ({ tags: a }: Article, { tags: b }: Article) => {
 @Component({
   selector: 'peach-related-articles',
   template: `
-  <p class="title">{{ 'VIEW.RELATED' | translate }}</p>
+  <p class="title"> Related articles </p>
 
   <mat-divider></mat-divider>
   
