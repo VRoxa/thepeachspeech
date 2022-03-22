@@ -1,15 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { LanguageService } from './services/language.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   template: `<router-outlet></router-outlet>`
 })
-export class AppComponent implements OnInit {
-  
-  constructor(private languagrService: LanguageService) { }
-
-  ngOnInit() {
-    this.languagrService.init();
-  }
-}
+export class AppComponent { }
