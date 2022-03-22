@@ -1,43 +1,43 @@
->Bienvenidxs a **The Peach Speech** (*el discurso del melocotón*, no suena tan bien es español).
+>Welcome to **The Peach Speech**.
 >
->Siendo éste el primer artículo del *blog*, me gustaría explicar de qué va.  
->Básicamente, este ~~no~~ es mi primer intento de empezar un proyecto que pueda enseñar lo que me gusta hacer y cómo lo hago. En los últimos años – y des de que me considero *software engineer* – he escrito mucho *software*, código y aplicaciones. La mayoría de ellas fueron escritas para la compañía por la que trabajo y el resto simplemente están escondidas en algún lugar, siempre privadas.
+>As the first article in the blog, I’d like to explain what is this blog about.  
+>This is basically ~~not~~ my first attempt to start a project able to show off what I like to do and how I do it.  For the last few years – and since I consider myself a software engineer – I wrote a lot of software, code and applications. Most of these were wrote for the company I work for; the rest of them were simply hidden somewhere in my workspace, always private.
 >
->Este *blog* pretende compartir contenido que creo que podría ser útil – o incluso entretenido – para alguien. Mi objetivo es empezar a construir algo por mi cuenta, como siempre he hecho, pero haciéndolo público de manera que cualquiera pueda verlo y juzgarlo.  
->My gustaría ir mejorando mis habilidades y conocimientos escribiendo este *blog*, así como mi expresión escrita – que soy plenamente consciente que está lejos de ser perfecta.
+>This is about sharing content I feel it might be useful – or even fun – to somebody. My goal is to start building something by my own as I always did, but making it public so everyone can see and judge.  
+>I’d like to improve my technical skills by writing this blog, as well as communication skills – which I know they are far from being perfect.
 >
->Dicho esto, esta *web* ya es un proyecto por sí mismo en el que planeo ir mejorando junto con otros proyectos que me encantaría implementar en un futuro.  
->Espero que tú, como lector, podrás sacar provecho del contenido leyendo o usando cualquier trozo de código que publique.  
->Soy totalmente consciente de que no soy una perfecta fuente de verdad y puedo estar equivocado; así que no dudes en contactamente cuando creas que no tenga razón o que puedo mejorar algo.
+>That being said, this website is already a project by itself, which I plan to improve along with other projects I’d love to implement in the future.  
+>Hopefully, you the reader can take profit of the content by reading or by using any piece of code I publish.  
+>I am totally aware that I am not the perfect source of truth and I can be wrong; so please don’t hesitate on contact me when you feel I’m mistaken or I can improve something.
 
-Cuando estaba desarrollando esta *web*, a parte del diseño y las funcionalidades, lo que más me preocupaba era *¿cómo voy a publicar los artículos?*. No me refiero cómo el usuario tendrá acceso a esos artículos – bueno, ya conoces la respuesta a eso, ahora –, me refiero a cómo voy a subir el contenido de los artículos de manera que la *web* pueda descargarlo.
+When I was building this website, besides the design and features, the thing I was worried about the most was *how will I publish articles?*. I don’t mean how the user will access those articles – well, you know the answer at this point –, I mean how I will upload the article contents in such a way the website can fetch them.
 
-Creo que tomé una decisión bastante sencilla. La información del artículo y el contenido del mismo está servido como un recurso de la *web* (*webpage asset*). En la carpeta de *assets*, se encuentra el fichero `articles.json`, que contiene toda la información de los artículos publicados; y la carpeta `articles`, que contiene los ficheros de *markdown*. Esto hace que la *web* sea una cápsula que contiene todos los recursos que necesita para servirse correctamente.  
-Tener esos artículos guardados en cualquier otro lado no genera tanta confianza en el sistema. A mi parecer, esta solución tiene sentido, agrupándolo todo en uno.
+I think I took a pretty simple solution. The article information and the article itself (its content) will be hosted as a webpage asset. In the assets folder, there’s the `articles.json` file, which contains all the published articles information; and the `articles` folder, that contains all the markdown files. This makes the website a sandbox that contains all the resources it needs to be properly served.  
+Having the articles stored somewhere else make the system not so reliable. I thought this solution made sense, wrapping the whole thing as one.
 
-Por otro lado, decidí servir la *web* con [GitHub Pages](https://pages.github.com/). En primer lugar porque es **gratuito** – aunque no espero demasiados usuarios consumiendo la *web* (no espero ninguno, de hecho), nunca antes he servido ficheros estáticos así que fui con la solución más sencilla posible. De todas formas, no creo que nadie se vaya a quejar por entrar a una URL rara de *GitHub*.  
-Servir en *GitHub Pages* me permite tener una *pipeline* de despliegue muy simple donde haciendo *push* del resultado de la compilación de la *web* en la rama `gh-ages` del repositorio sirve automáticamente todos los ficheros estáticos. Añadí un sencillo [GitHub workflow](https://github.com/features/actions) que es ejecutado cada vez que hago *push* en la rama `master`. Este *workflow* hace la compilación de la aplicación *web* de Angular y hace un *push* del resultado en la rama `gh-pages` de forma automática – puedes ver el [workflow](https://github.com/VRoxa/thepeachspeech/blob/master/.github/workflows/build-deploy.yml) (*manifest*).
+On the other hand, I decided to host the site via [GitHub Pages](https://pages.github.com/). First of all, because it’s **free** – although I don’t expect many users to consume the site (I expect none but me, indeed), I’ve never hosted static files before so I went through the easiest way possible. Anyways, I bet nobody is going to complain about reaching a *GitHub* weird-looking URL at all.  
+Hosting on *GitHub Pages* allows me to have a very straightforward deployment pipeline where pushing the site’s built bundle to the `gh-pages` repository branch serves the static files automatically. I added a simple [GitHub workflow](https://github.com/features/actions) which is triggered whenever I push to `master`, builds the Angular web application and automatically pushes the result bundle into the `gh-pages` branch – you can check out the [workflow manifest](https://github.com/VRoxa/thepeachspeech/blob/master/.github/workflows/build-deploy.yml).
 
-Al aspecto CICD (más o menos) se ve bastante bien, pero aún tengo que añadir el fichero *markdown* del artículo y actualizar el `articles.json` para declarar un nuevo artículo. De modo que de esto se trata mi primer artículo: **implementar una herramienta para subir artículos a mi *blog* automáticamente**.
+The CICD (sort of) aspect is looking good enough, but I still have to add the article markdown file and update the `articles.json` to declare the new article. So, this is what my first article is about: **implementing a tool to automatically upload articles to my blog**.
 
 ----
 
-## La Peach Speech *tool*
+## The Peach Speech tool
 
-La Peach Speech *tool* (aún sigo buscando un nombre mejor) es una aplicación de consola que toma la ruta de un fichero *markdown*, así como su *metadata* y lo sube automáticamente al repositorio. La aplicación consiste en tres partes: la interfaz de usuario, la recolección de datos y el tratamiento del repositorio de Git.
+The Peach Speech tool (still looking for a better name, tho) is a console application that takes the path of a markdown file as well as its metadata and uploads it automatically to the repository. The application consists of three parts: the user interface, the data collecting and the Git repository handling.
 
-En este artículo, quiero enfocarme en el tratamiento del repositorio de Git. Voy a cubrir las otras dos partes en un futuro.
+In this article, I want to focus on the Git repository handling. I am going to cover the other two parts somewhere in the future.
 
 [TOC]
 
-### Gestionando el repositorio de Git
+### Managing the Git repository
 
-Nunca antes había hecho una programa que gestione un repositorio de Git. Después de una búsqueda rápida, encontré la librería [nodegit](https://github.com/nodegit/nodegit). Parece estar bastante extendida, así que le di una oportunidad.  
-Mi objetivo es subir un fichero *markdown* y modificar el fichero `articles.json` añadiendo la nueva información del artículo.
+I’ve never managed a Git repository programatically before. After a short search, I found the [nodegit](https://github.com/nodegit/nodegit) library. It seems to be widely used, so I gave it a try.  
+My goal is to upload a markdown file and modify the `articles.json` file adding the new article metadata.
 
-#### Montando el entorno
+#### Setting up
 
-Necesito clonar el repositorio de Git del remoto en primer lugar. Hay dos tipos de repositorios: ***bare repositories*** y ***non-bare repositories***. Voy a usar el primero porque me gustaría tratar con árboles y entradas de árboles (*blobs*) en vez de tratar con el árbol de ficheros.
+First of all, I need to clone the Git repository from the remote. There are two types of repositories: **non-bare repositories** and **bare repositories**. I will use a bare one, because I’d prefer to deal with trees and tree entries (blobs), rather than a working tree – the actual file structure.
 
 ```typescript
 // setup.ts
@@ -78,14 +78,14 @@ export const setup = async (): Promise<Repository> => {
 }
 ```
 
-Antes de clonar el repositorio, quiero asegurarme de que el entorno está limpio; para ello uso [rimraf](https://www.npmjs.com/package/rimraf) para borrar la carpeta del repositorio completamente.  
-Clonar el repositorio es bastante fácil. Una vez el repositorio está clonado, actualizo el repositorio con la última versión, así que descargo cualquier cambio en él (no estoy seguro de si este paso es estrictamente necesario).
+Before cloning the repository, I want to make sure the environment is clean, so I use [rimraf](https://www.npmjs.com/package/rimraf) to delete the whole repository folder.  
+Cloning the repository is pretty straightforward. Once the repository is cloned, I have to make sure the whole repository is updated with the last version, so I fetch any change on it (I don’t really know if that’s needed, I am just double checking it).
 
-La función `setup` retorna el objeto `Repository` asíncronamente.
+The `setup` function returns the result `Repository` object asynchronously.
 
-#### Accediendo a los ficheros del repositorio
+#### Accessing the repository files
 
-Antes que nada, me creo la clase `FileAccess`, para abstraer cualquier acceso a los ficheros del repositorio. Ésta clase usa árboles y *blobs* para leer del repositorio y escribir en él.
+Before anything else, I create the `FileAccess` class, to abstract any file access into the repository. It uses trees and blobs to read and write from and to the repository.
 
 ```typescript
 // file-access.ts
@@ -111,10 +111,10 @@ export class FileAccess {
 }
 ```
 
-Leer ficheros del repositorio es bastante fácil. Asumiendo que leemos del árbol de trabajo en la rama *master*, sacamos el árbol de ahí (función `getTree`). Entonces tenemos que encontrar una entrada en el árbol por la ruta que nos dan. En este punto podemos asumir que la entrada del árbol es un *blob* (podría ser cualquier otro valor del [enum `FILEMODE`](https://www.nodegit.org/api/tree_entry#FILEMODE)). Teniendo la entrada, podemos sacar el objeto *blob* por el identificador de la entrada y leerlo como un `string`.
+Reading files from the repository is fairly easy. Assuming we read from the working tree at the *master* branch, we get the tree from it (`getTree` function). Then, we need to find the tree entry by the given path. At this point, we can assume that the tree entry is a blob (it could be any value from the [`FILEMODE` enum](https://www.nodegit.org/api/tree_entry#FILEMODE)). Having the tree entry, we can get the actual blob object by the tree entry identifier, then read it as `string`.
 
-Cuando se trata de escritura, las cosas se ponen un poco más serias.  
-Mi primer intento parecía premetedor…
+When it comes to writing, things get a bit more serious.  
+My first attempt seemed promising…
 
 ```typescript
 // file-access.ts
@@ -138,15 +138,14 @@ export class FileAccess {
 }
 ```
 
-Sacando el árbol de la rama *master* otra vez, creamos un `Treebuilder`. La intancia de `Treebuilder` nos permite modificar cualquier árbol.  
-Tenemos que crear un objeto *blob* con un *buffer*, insertar el *blob* especificando a qué ruta debe ir (relativa des de la raíz) y escribir en el `Treebuilder`. La función `write` devolverá el nuevo identificador del árbol, que usaremos más adelante.
+Getting the *master* branch tree again, we create a `Treebuilder`. The `Treebuilder` instance allows us to modify any given tree.  
+We have to create a blob object from a buffer. Then, we just need to insert the blob specifying the path where it will be placed (relative to the root) and write the `Treebuilder`. The `write` function returns the new tree identifier which is going to be used later on.
 
-La versión de arriba lanza un error críptico cuando tratamos de actualizar el fichero `articles.json`.
+The version above throws this cryptic error when trying to update the `articles.json` file.
 
-> `Error: failed to insert entry: invalid name for a tree entry - src/assets/articles.json`  
-> *Error: fallo al insertar la entrada: nombre inválido para una entrada de árbol - src/assets/articles.json*
+> `Error: failed to insert entry: invalid name for a tree entry - src/assets/articles.json`
 
-Vale, entonces, ¿qué ha ido mal? Bueno, parece ser que no puedes insertar un objeto *blob* con una ruta entera, tiene que ser un nombre de fichero. Así que tenemos que modificar el árbol de la carpeta a la que queremos apuntar. Primero, vamos a escribir una función que devuelva el árbol de la carpeta.
+Okay, *what went wrong*, then? Well, turns out you cannot insert a blob object with a full path, it must be a file name. So, we have to modify the tree of the folder we want to point to. First, let’s write a function that gets the folder tree.
 
 ```typescript
 // file-access.ts
@@ -175,8 +174,8 @@ export class FileAccess {
 }
 ```
 
-Podemos *pasear* (`walk`) a través del árbol base (el árbol de la rama *master*), obteniendo todas las entradas de árbol y coleccionándolas en una lista de `TreeEntry`.  
-Una vez el paseo termina, filtramos estas entradas por la ruta de la carpeta.
+We can `walk` through a base tree (the *master* branch tree), getting all the tree entries and collecting them into an array of `TreeEntry`.  
+Once the walk ends, we filter all these entries by the folder path.
 
 ```typescript
 // file-access.ts
@@ -209,10 +208,9 @@ export class FileAccess {
 }
 ```
 
-Algunas de estas entradas son objetos *blob*, pero nosotros solo queremos buscar los árboles reales; así que debemos filtrar las entradas antes que nada.  
-Con este cambio ya podemos sacar el árbol que está en la ruta de nuestra carpeta.
+Before anything else, we need to filter the tree entries. Some of them are pointers to blob objects, but only want to look for actual trees. We are now able to get the tree which satisfies our folder path.
 
-La función `addOrUpdateFile` cambia solo un poco: la ruta se ha dividido en la ruta de la carpeta y el nombre del fichero, y el `Treebuilder` se crea ahora des del árbol que encontramos usando la función `getTreeAt`. Y, por supuesto, la función `insert` toma ahora el nombre del fichero como primer argumento – de eso se trataba el cambio, a fin de cuentas.
+The `addOrUpdateFile` function barely changes: the full path is split into the folder path and the file name and the `Treebuilder` is now created from the tree we find using the `getTreeAt` function. And, of course, the `insert` function now takes the file name as the first argument – that’s the whole point of the update.
 
 ```typescript
 import { Repository, Tree, Treebuilder, Blob, TreeEntry, Oid } from 'nodegit';
@@ -247,11 +245,11 @@ export class FileAccess {
 }
 ```
 
-#### Aplicando los cambios al repositorio
+#### Applying changes to the repository
 
-Ahora que somos capaces de gestionar el árbol de trabajo del repositorio, vamos a implementar el `RepositoryManager`. El servicio `RepositoryManager` creará *commits* y hará *push* al repositorio remoto.
+Now that we can manage the repository working tree, let’s implement the `RepositoryManager`. The `RepositoryManager` service will create commits and push them to the remote repository.
 
-La función `commit` toma un identificador de un árbol y el mensaje del *commit*. La referencia del árbol que pasamos es la que obtenemos como resultado de invocar la función `addOrUpdateFile`. Para simplificar, podemos asumir que el *commit* será creado des el *HEAD* del repositorio que apunta a la rama *master*, con una firma estática que representa el autor y el *committer* (aquél que crea el *commit*).
+The `commit` function takes the identifier of a tree and the commit message. The tree reference we pass in is the tree we previously modified in the `addOrUpdateFile` function. To keep things simple, we assume the commit to be created from the repository HEAD pointing to the *master* branch, with a static signature – representing the author and the committer.
 
 ```typescript
 // repository-manager.ts
@@ -269,25 +267,25 @@ export class RepositoryManager {
   commit = async (tree: Oid, message: string) => {
     const head = await this.repository.getBranchCommit("master");
     return await this.repository.createCommit(
-      // La referencia que será actualizada para apuntar al nuevo commit.
-      // Para nosotros, actualizaremos el puntero HEAD
+      // The reference that will be updated to point to this new commit
+      // For us, we will update the HEAD pointer
       'HEAD',
-      // Autor
+      // Author
       this.signature,
       // Committer
       this.signature,
       message,
-      // El árbol que representa los cambios
+      // The tree that represents the changes to be committed
       tree,
-      // El commit padre.
-      // Para nosotros, es la rama master.
+      // The parent commit.
+      // For us, the master branch.
       [head]
     );
   }
 }
 ```
 
-La función `push` obtendrá la referencia al repositorio remoto (`origin`, en nuestro caso) y hará *push* de los cambios des del puntero de la rama *master*.
+The `push` function will get the remote repository reference (`origin`, in our case) and push the changes from the *master* branch pointer.
 
 ```typescript
 // repository-manager.ts
@@ -307,15 +305,14 @@ export class RepositoryManager {
 }
 ```
 
-Como era de esperar, la función `push` lanza este error:
+The `push` function throws an expected error,
 
 > `[Error: request failed with status code: 401] {
-> errno: -1,
-> errorFunction: 'Remote.push'
-> }`  
-> *Error: la petición ha fallado con código de estado: 401*
+>   errno: -1,
+>   errorFunction: 'Remote.push'
+> }`
 
-Muy bien, de modo que tenemos que proveer las credenciales de acceso al repositorio remoto. La función `Remote.push` asume un segundo argumento, las `PushOptions`. Ahí podemos especificar una *callback* de credenciales.
+Okay, so we have to provide the credentials to access the repository remotely. The `Remote.push` function expects a second argument, the `PushOptions`. We can specify a credentials callback there.
 
 ```typescript
 // repository-manager.ts
@@ -336,27 +333,25 @@ push = async () => {
 }
 ```
 
-Ahora la función `push` se comporta un poco diferente, pero totalmente mal,
+Now, the `push` function behaves slightly different, but totally wrong,
 
 > `Trying to authenticate to https://github.com/VRoxa/thepeachspeech
 > Trying to authenticate to https://github.com/VRoxa/thepeachspeech
 > Trying to authenticate to https://github.com/VRoxa/thepeachspeech
 > ...
 > [Error: too many redirects or authentication replays] {
-> errno: -1,
-> errorFunction: 'Remote.push'
-> }`  
-> *Intentando autenticarse a https://github.com/VRoxa/thepeachspeech*  
-> *Error: demasiadas redirecciones o reintentos de autenticación*
+>   errno: -1,
+>   errorFunction: 'Remote.push'
+> }`
 
-Hay algunos artículos describiendo el mismo problema – incluyendo *nodegit*, *libgit2*, *LibGit2Sharp*, … – y [uno en particular](https://github.com/nodegit/nodegit/issues/511) con una explicación simple:
+There are some posts around the web with the very same issue – including *nodegit*, *libgit2*, *LibGit2Sharp*, … – and a [particular one](https://github.com/nodegit/nodegit/issues/511) with a simple statement:
 
->Si estás usando `NodeGit.Cred.userpassPlaintextNew` y no está funcionando, entonces no estás usando SSH y ninguna clave SSH del mundo va a autenticarte en la sesión de HTTPS. Intenta cambiar de protocolo.
+> If you're using `NodeGit.Cred.userpassPlaintextNew` and that's working then you're not using SSH and no SSH key in the world is going to authenticate you into an HTTPS session. Try switching protocols.
 >
->**[johnhaley81](https://github.com/johnhaley81)**
+> **[johnhaley81](https://github.com/johnhaley81)**
 
-Bueno, en mi caso, usar la función `Cred.userpassPlaintextNew` con mi usuario y contraseña de GitHub no funcionó. De todas formas, antes estaba intentando autenticarme con SSH mientras abría el repositorio con HTTPS. Así que le di otra oportunidad a SSH, esta vez con las claves SSH.  
-Generé las claves (una pública y otra privada) y las guardé en la carpeta `keys`.
+Well, in my case, trying `Cred.userpassPlaintextNew` with my actual GitHub username and password didn’t work. However, I was previously trying to authenticate via SSH, while opening the repository via HTTPS. So I gave SSH another try authenticating with SSH key this time.  
+I generated both public and private keys and stored in a `keys` folder.
 
 ```typescript
 // credentials.ts
@@ -386,10 +381,7 @@ export const getCredentialsCallbacks = (): RemoteCallbacks => {
 > By the way, *nodegit* – its underlying libraries, indeed – does not support the OpenSSH private key format, which is the format OpenSSH ≥7.8 generates by default. I had to generate the keys using the PEM format, `ssh-keygen -m PEM -C <your_mail@example.com>`.  
 > Thanks to [this post](https://github.com/nodegit/nodegit/issues/1606) for the hint.
 
-> Por cierto, *nodegit* – sus librerías internas, de hecho – no soporta el formato de clave OpenSSH, que es el formato que OpenSSH ≥7.8 genera por defecto. Tuve que generar las claves usando el formato PEM, `ssh-keygen -m PEM -C <your_mail@example.com>`.  
-> Gracias a [este comenario](https://github.com/nodegit/nodegit/issues/1606) por la pista.
-
-Teniendo una forma de proveer mis credenciales, ahora puedo modificar las funciones `clone`, `fetch` y `push` con ellas.
+Having a way to provide my credentials, I can now modify the `clone`, `fetch` and `push` functions with them.
 
 ```typescript
 // setup.ts
@@ -425,26 +417,26 @@ push = async () => {
 }
 ```
 
-Además, el valor de `repositoryUrl` tiene que cambiar a su versión SSH, `git@github.com:VRoxa/thepeachspeech.git`.  
-Parece bastante correcto… Pero una verdad amarga me espera.
+And, of course, the `repositoryUrl` now has to change to SSH version `git@github.com:VRoxa/thepeachspeech.git`.  
+Seems alright… But a bitter truth awaits.
 
-### Un paso atrás – (No) Dándome cuenta de cómo funcionan los árboles de Git
+### Stepping back - (un)Realizing how Git trees work
 
-Volvamos un segundo a la función `commit`. La función `commit` estaba creando un *commit* usando el `Oid` (identificador) del árbol que retorna la función `addOrUpdateFile`, que representa los cambios hechos. A mí me parecía correcto. Bueno, está muy lejos de estar correcto.  
-Fijándome bien en el *commit* creado, tiene el fichero modificado (o creado), bien; pero borra el resto de ficheros en el árbol de trabajo. Por lo que entiendo, el árbol que ha sido devuelto sólo tiene los cambios que hemos hecho, ignorando todos los demás ficheros – porque sólo hemos devuelto el árbol de la ruta de la carpeta. Esto resulta en que todos los otros ficheros están borrados en el *diff*.
+Let’s get back to the `commit` function. The `commit` function was creating a commit using the tree’s `Oid` returned by the `addOrUpdateFile` function, which represents the changes to commit. It felt okay to me. Well, it’s very far from being okay.  
+Taking a closer look to the created commit, it has the modified (or created) file; good. However, it removes the rest of the files in the working tree. In my understanding, the returned tree only has the change we made, ignoring every other file – because we just retrieved the tree at the target folder. This results in the removal of the rest of files in the *diff*.
 
-Después de un buen rato probando y buscando no llegué a nada. La documentación tampoco ayuda demasiado.  
-Usando el “*árbol base*” (`const tree = this.repository.getBranchCommit('master').then(head => head.getTree());`) “todo” funciona, pero ya hemos visto como es sólo podemos insertar un *blob* con el nombre del fichero (estoy convencido de que esto tiene fácil arreglo, pero está totalmente indocumentado).  
-Volcando los cambios en el árbol de la carpeta y creando un *commit* des del “*árbol base*” resulta en un *commit* vacío, sin ningún cambio.
+After searching and trying, I found nothing. The documentation doesn’t help that much.  
+Using the “base tree” (`const tree = this.repository.getBranchCommit('master').then(head => head.getTree());`) everything is working, but we’ve just seen how we can only insert a blob as a file name (I am sure this has to have an easy fix, but it’s totally undocumented).  
+Using the folder tree to bulk the changes and committing the “base tree” results in an empty commit (without any change), unsurprisingly.
 
-#### Una conclusión amarga
+#### A bitter conclusion
 
-Tengo que simplificar un poco la solución – en vez de tratar de entender las entrañas de Git como si yo fuera Linus Torvalds.
+I have to simplify the solution a bit – rather than trying to understand the *ins* and *outs* of Git as if I was Linus Torvalds.
 
-Clonar el repositorio remoto como un *non-bare repository* me permite leer y escribir ficheros como un ser humano normal. Con el sistema de ficheros de Node, esto es una tarea trivial.  
-Una vez la función `addOrUpdateFile` esté modificada, Aún necesito un árbol que represente esos cambios. Usando el “*árbol base*” como tal produce el mismo resultado: un *commit* vacío.
+Starting by cloning the repository remotely as a non-bare repository allows my to read and write files like a normal human being. With the standard Node’s file system, this task is really trivial.  
+Once the `addOrUpdateFile` is done, I still need a tree representing the current working tree with those changes. Using the “base tree” as it is produces the exact same result: an empty commit.
 
-Estoy pensando en cambiar a otra herramienta para gestionar todos los cambios en local.  
-Hay algunas alternativas; por ejemplo, [simple-git](https://github.com/steveukx/git-js) parece prometedora.
+I am thinking of switching to another tool to manage all *offline* (local) changes.  
+There are some alternatives out there, and [simple-git](https://github.com/steveukx/git-js) seems promising…
 
-Git no es ningún juego.
+Git is not a joke.

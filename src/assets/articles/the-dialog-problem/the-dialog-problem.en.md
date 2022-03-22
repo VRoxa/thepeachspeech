@@ -129,7 +129,7 @@ export class DialogService {
 }
 ```
 
-As you can see, the `DialogService` decorates the `MatDialog` service and exposes a fresh new properly typed `open` function. We haven’t changed anything, the `open` function will behave the same way at runtime but we just gained the type safety experience we expect from Typescript.
+As you can see, the `DialogSerice` decorates the `MatDialog` service and exposes a fresh new properly typed `open` function. We haven’t changed anything, the `open` function will behave the same way at runtime but we just gained the type safety experience we expect from Typescript.
 
 From the consumer’s point of view, nothing changes when it makes a good use of the dialog types.
 
@@ -163,26 +163,26 @@ export class MyComponent {
 > 
 > // @Component({ ... })
 > export class MyComponent {
->     // ..
+>   // ..
 > 
->     public openDialog = () => {
->        // Argument of type 'typeof NotADialogComponent' is not assignable to 
->        // parameter of type 'new (...args: any[]) => AppDialog<any, any>'.
->        const ref = this.dialog.open(NotADialogComponent);
+>   public openDialog = () => {
+>     // Argument of type 'typeof NotADialogComponent' is not assignable to 
+>     // parameter of type 'new (...args: any[]) => AppDialog<any, any>'.
+>     const ref = this.dialog.open(NotADialogComponent);
 > 
->     // Type '{ five: string; }' is not assignable to type 'DialogInputData'.
->        const ref = this.dialog.open(SomeDialogComponent, {
->          data: { five: 'Invalid' }
->        });
+> 	// Type '{ five: string; }' is not assignable to type 'DialogInputData'.
+>     const ref = this.dialog.open(SomeDialogComponent, {
+>       data: { five: 'Invalid' }
+>     });
 > 
->        const ref = this.dialog.open(SomeDialogComponent, {
->          data: { one: 1, two: 2 }
->        });
+>     const ref = this.dialog.open(SomeDialogComponent, {
+>       data: { one: 1, two: 2 }
+>     });
 > 
->        // Argument of type '(res: string) => void' is not assignable 
->        // to parameter of type '(value: DialogOutputData) => void'.
->        ref.afterClosed().subscribe((res: string) => {...});
->     }
+>     // Argument of type '(res: string) => void' is not assignable 
+>     // to parameter of type '(value: DialogOutputData) => void'.
+>     ref.afterClosed().subscribe((res: string) => {...});
+>   }
 > }  
 > ```
 > Typescript now complains about trying to open any class that does not extend the `AppDialog` class.  
