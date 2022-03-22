@@ -307,10 +307,10 @@ export class RepositoryManager {
 
 The `push` function throws an expected error,
 
-> `[Error: request failed with status code: 401] {
->   errno: -1,
->   errorFunction: 'Remote.push'
-> }`
+> `[Error: request failed with status code: 401] {`  
+>   `  errno: -1,`  
+>   `  errorFunction: 'Remote.push'`  
+> `}`
 
 Okay, so we have to provide the credentials to access the repository remotely. The `Remote.push` function expects a second argument, the `PushOptions`. We can specify a credentials callback there.
 
@@ -335,14 +335,14 @@ push = async () => {
 
 Now, the `push` function behaves slightly different, but totally wrong,
 
-> `Trying to authenticate to https://github.com/VRoxa/thepeachspeech
-> Trying to authenticate to https://github.com/VRoxa/thepeachspeech
-> Trying to authenticate to https://github.com/VRoxa/thepeachspeech
-> ...
-> [Error: too many redirects or authentication replays] {
->   errno: -1,
->   errorFunction: 'Remote.push'
-> }`
+> `Trying to authenticate to https://github.com/VRoxa/thepeachspeech`  
+> `Trying to authenticate to https://github.com/VRoxa/thepeachspeech`
+> `Trying to authenticate to https://github.com/VRoxa/thepeachspeech`  
+> `...`  
+> `[Error: too many redirects or authentication replays] {`  
+>   `errno: -1,`  
+>   `errorFunction: 'Remote.push'`  
+> `}`
 
 There are some posts around the web with the very same issue – including *nodegit*, *libgit2*, *LibGit2Sharp*, … – and a [particular one](https://github.com/nodegit/nodegit/issues/511) with a simple statement:
 
@@ -433,7 +433,7 @@ Using the folder tree to bulk the changes and committing the “base tree” res
 
 I have to simplify the solution a bit – rather than trying to understand the *ins* and *outs* of Git as if I was Linus Torvalds.
 
-Starting by cloning the repository remotely as a non-bare repository allows my to read and write files like a normal human being. With the standard Node’s file system, this task is really trivial.  
+Starting by cloning the repository remotely as a non-bare repository allows me to read and write files like a normal human being. With the standard Node’s file system, this task is really trivial.  
 Once the `addOrUpdateFile` is done, I still need a tree representing the current working tree with those changes. Using the “base tree” as it is produces the exact same result: an empty commit.
 
 I am thinking of switching to another tool to manage all *offline* (local) changes.  

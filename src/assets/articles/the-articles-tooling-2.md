@@ -1,4 +1,4 @@
-I recently tried to implement my own tooling program to upload articles more easily. I explained how the adventure went [in my latest article](https://vroxa.github.io/thepeachspeech/article/the-articles-tooling) – *spoiler*: not so good. I realized how frustrating working with *nodegit* was, that I switched to another Git library. However, I managed to connect to GitHub to clone, fetch and push authenticating the calls with SSH keys; so I want to still use that bit.
+I recently tried to implement my own tooling program to upload articles more easily. I explained how the adventure went [in my latest article](https://vroxa.github.io/thepeachspeech/en/article/the-articles-tooling) – *spoiler*: not so good. I realized how frustrating working with *nodegit* was, that I switched to another Git library. However, I managed to connect to GitHub to clone, fetch and push authenticating the calls with SSH keys; so I want to still use that bit.
 
 ### The final Git solution
 
@@ -9,9 +9,7 @@ The `setup` function will initialize the `RepositoryManager` after cleaning the 
 // setup.ts
 const cleanUpEnvironment = (): Promise<void> => {
   return new Promise(resolve => {
-    rimraf(env.repositoryPath, () => {
-      resolve();
-    });
+    rimraf(env.repositoryPath, resolve);
   });
 }
 
@@ -106,7 +104,7 @@ import git from 'simple-git';
 
 
 export const createCommit = async (message: string) => {
-  // Configures the repository instance to the rpeository path
+  // Configures the repository instance to the repository path
   const repository = git(environment.repositoryPath);
     
   // Stages every file

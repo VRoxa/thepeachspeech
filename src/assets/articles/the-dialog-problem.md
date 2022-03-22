@@ -129,7 +129,7 @@ export class DialogService {
 }
 ```
 
-As you can see, the `DialogSerice` decorates the `MatDialog` service and exposes a fresh new properly typed `open` function. We haven’t changed anything, the `open` function will behave the same way at runtime but we just gained the type safety experience we expect from Typescript.
+As you can see, the `DialogService` decorates the `MatDialog` service and exposes a fresh new properly typed `open` function. We haven’t changed anything, the `open` function will behave the same way at runtime but we just gained the type safety experience we expect from Typescript.
 
 From the consumer’s point of view, nothing changes when it makes a good use of the dialog types.
 
@@ -170,7 +170,7 @@ export class MyComponent {
 >     // parameter of type 'new (...args: any[]) => AppDialog<any, any>'.
 >     const ref = this.dialog.open(NotADialogComponent);
 > 
-> 	// Type '{ five: string; }' is not assignable to type 'DialogInputData'.
+>     // Type '{ five: string; }' is not assignable to type 'DialogInputData'.
 >     const ref = this.dialog.open(SomeDialogComponent, {
 >       data: { five: 'Invalid' }
 >     });
@@ -185,6 +185,7 @@ export class MyComponent {
 >   }
 > }  
 > ```
+>
 > Typescript now complains about trying to open any class that does not extend the `AppDialog` class.  
 > Passing the wrong type as the input data causes a compilation error, as well as declaring the wrong output type.
 
