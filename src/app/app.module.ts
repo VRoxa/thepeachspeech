@@ -21,7 +21,6 @@ import { ArticleNotFoundComponent } from './components/article-view/article-not-
 import { ArticlesRepositoryComponent } from './components/articles-repository/articles-repository.component';
 import { ArticleTreeNodeComponent } from './components/articles-repository/article-tree-node/article-tree-node.component';
 import { RelatedArticlesComponent } from './components/article-view/related-articles/related-articles.component';
-import { LanguageToggleComponent } from './components/common/language-toggle.component';
 
 // Pipes
 import { SafePipe } from './pipes/safe.pipe';
@@ -41,7 +40,6 @@ export function createTranslateLoader(http: HttpClient) {
     ArticlesRepositoryComponent,
     ArticleTreeNodeComponent,
     RelatedArticlesComponent,
-    LanguageToggleComponent,
     SafePipe,
   ],
   imports: [
