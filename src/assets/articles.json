@@ -33,5 +33,17 @@
       "refactoring"
     ],
     "date": "2022-02-28T18:51:30.092Z"
+  },
+  {
+    "title": "Mocking the logger",
+    "oneliner": "Presenting Mogger, the definitive solution for logger mocking and logging assertions in .NET",
+    "url": "mocking-the-logger",
+    "tags": [
+      ".net",
+      "logging",
+      "testing",
+      "xunit"
+    ],
+    "date": "2022-04-06T08:29:43.728Z"
   }
 ]
