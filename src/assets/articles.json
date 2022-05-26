@@ -45,5 +45,18 @@
       "xunit"
     ],
     "date": "2022-04-06T08:29:43.728Z"
+  },
+  {
+    "title": "Dealing with the service loctor pattern",
+    "oneliner": "Roaming through the service locator pattern and dependency injection, finding out different solutions for smelly designs.",
+    "url": "service-locator",
+    "tags": [
+      "C#",
+      "Autofac",
+      "Dependency injection",
+      "SOLID",
+      "Design patterns"
+    ],
+    "date": "2022-05-26T12:26:59.779Z"
   }
 ]
