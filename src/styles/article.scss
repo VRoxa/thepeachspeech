@@ -22,10 +22,11 @@
     border: 1px solid #474851;
     padding: 1rem;
     width: calc(100% - 2rem);
+    overflow-x: auto;
 }
 
 ::ng-deep code {
-    font-family: 'Inconsolata', monospace;
+    font-family: 'Fira Code', monospace;
 }
   
 ::ng-deep .hljs-tag,
