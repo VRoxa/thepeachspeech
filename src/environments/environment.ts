@@ -1,6 +1,6 @@
 
 export const environment = {
   production: false,
-  dataUri: '/assets/mock-articles.json',
+  dataUri: '/assets/articles.json',
   articleBaseUri: '/assets/articles/'
 };

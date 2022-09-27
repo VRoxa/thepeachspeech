@@ -7,9 +7,8 @@
     "tags": [
       "git",
       "node",
-      "typescript"
-    ],
-    "filePath": "C:\\Users\\esvdlr\\Documents\\peach-articles\\The articles tooling.md"
+      "Typescript"
+    ]
   },
   {
     "title": "The articles tooling #2",
@@ -18,7 +17,7 @@
     "tags": [
       "git",
       "node",
-      "typescript"
+      "Typescript"
     ],
     "date": "2022-02-24T23:00:00.000Z"
   },
@@ -27,10 +26,10 @@
     "oneliner": "Exposing why the Angular Material dialog type system is a problem and providing a pretty straightforward solution to that.",
     "url": "the-dialog-problem",
     "tags": [
-      "angular",
-      "angular material",
-      "typescript",
-      "refactoring"
+      "Angular",
+      "Angular Material",
+      "Typescript",
+      "Refactoring"
     ],
     "date": "2022-02-28T18:51:30.092Z"
   },
@@ -39,15 +38,15 @@
     "oneliner": "Presenting Mogger, the definitive solution for logger mocking and logging assertions in .NET",
     "url": "mocking-the-logger",
     "tags": [
-      ".net",
-      "logging",
-      "testing",
-      "xunit"
+      ".NET",
+      "Logging",
+      "Testing",
+      "xUnit"
     ],
     "date": "2022-04-06T08:29:43.728Z"
   },
   {
-    "title": "Dealing with the service loctor pattern",
+    "title": "Dealing with the service locator pattern",
     "oneliner": "Roaming through the service locator pattern and dependency injection, finding out different solutions for smelly designs.",
     "url": "service-locator",
     "tags": [

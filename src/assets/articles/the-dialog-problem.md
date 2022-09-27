@@ -60,7 +60,7 @@ type DialogRef<TParams, TResult> = MatDialogRef<AppDialog<TParams, TResult>, TRe
 
 export class AppDialog<TParams, TResult> {
   constructor(
-  	protected ref: DialogRef<TParams, TResult>,
+    protected ref: DialogRef<TParams, TResult>,
     protected data?: TParams
   ) { }
 }
@@ -84,7 +84,7 @@ export interface DialogOutputData {
 export class MyDialog extends AppDialog<DialogInputData, DialogOutputData> {
   
   constructor(
-  	private ref: MatDialogRef<MyDialog>,
+    private ref: MatDialogRef<MyDialog>,
     @Inject(MAT_DIALOG_DATA) private data: Readonly<DialogInputData>
   ) {
     super(ref, data);      
@@ -120,7 +120,7 @@ export class DialogService {
   constructor(private dialog: MatDialog) { }
     
   public open = <TDialog extends AppDialog<any, any>>(
-  	type: Constructor<TDialog>,		// Infer the TParams type arg
+    type: Constructor<TDialog>,		// Infer the TParams type arg
     config?: DialogConfig<TDialog>	// Infer the TResult type arg
   ): DialogRef<TDialog> => {
     // We are inferring our types to the MatDialog open function
@@ -221,7 +221,7 @@ export class DialogService {
   // open
     
   public closeAll = (): void => {
-  	this.dialog.closeAll();
+    this.dialog.closeAll();
   }
 }
 ```
