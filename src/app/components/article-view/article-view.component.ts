@@ -9,6 +9,7 @@ import {
   mergeMap,
   Observable,
   of,
+  shareReplay,
   startWith,
   tap
 } from 'rxjs';
@@ -28,9 +29,7 @@ interface ArticleViewModel {
 })
 export class ArticleViewComponent implements OnInit {
 
-  public article$!: Observable<Article | undefined>;
   public vm$!: Observable<ArticleViewModel>;
-
   public fetchingArticle!: boolean;
 
   constructor(
@@ -39,49 +38,56 @@ export class ArticleViewComponent implements OnInit {
     private router: Router
   ) { }
 
+  public get article$() {
+    return this.vm$.pipe(
+      map(({article}) => article)
+    );
+  }
+
   ngOnInit() {
     const routing$ = concat(
       of(this.router.url),
-      this.router.events
-        .pipe(
-          filter(event => event instanceof NavigationEnd),
-          map(event => event as NavigationEnd),
-          // Ignore fragment routing
-          filter(({ url }) => !url.split('#')[1]),
-          map(({ url }) => url)
-        )
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(event => event as NavigationEnd),
+        // Ignore fragment routing
+        filter(({ url }) => !url.split('#')[1]),
+        map(({ url }) => url)
+      )
     ).pipe(
       // The router returns the URL with a leading slash.
       // We need to get the third element of the route, splitting by slash.
       // /article/article-1 -> [/, /article, article-1] -> article-1
       map(url => url.split('/')[2]),
       // Start "loading flag" when route changes
-      tap(() => this.fetchingArticle = true)
+      tap(() => this.fetchingArticle = true),
+      shareReplay(1)  
     );
 
     // Articles are fetched once.
     const articles$ = this.service.getArticles();
         
-    this.article$ = combineLatest([routing$, articles$]).pipe(
-      map(([url, articles]) => articles.find(({ url: articleUrl }) => articleUrl === url)),
+    const article$ = combineLatest([routing$, articles$]).pipe(
+      map(([url, articles]) => articles.find(
+        ({ url: articleUrl }) => articleUrl === url)
+      ),
       // Stop "loading flag" if the article could not be found.
       tap(article => !!article || (this.fetchingArticle = false))
     );
       
-    const htmlContent$ = this.article$.pipe(
+    const htmlContent$ = article$.pipe(
       filter(article => !!article),
-      mergeMap(article => this.html.getArticleContent(article!)
-        .pipe(
-          // Stop "loading flag" when the content is received
-          finalize(() => this.fetchingArticle = false)
-        )),
+      mergeMap(article => this.html.getArticleContent(article!).pipe(
+        // Stop "loading flag" when the content is received
+        finalize(() => this.fetchingArticle = false)
+      )),
       // Start HTML content stream with empty content
       // to make vm$ emit even when the first fetched article is not found (null)
       startWith(``),
     );
 
-    // Declare the View model stream with the article and its content.
-    this.vm$ = combineLatest([this.article$, htmlContent$]).pipe(
+    // Declare the view model stream with the article and its content.
+    this.vm$ = combineLatest([article$, htmlContent$]).pipe(
       map(([article, htmlContent]) => ({article, htmlContent}))
     );
   }
