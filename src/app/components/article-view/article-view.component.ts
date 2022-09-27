@@ -1,14 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, finalize, map, mergeMap, Observable, Subject, tap } from 'rxjs';
+import {
+  combineLatest,
+  concat,
+  filter,
+  finalize,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  startWith,
+  tap
+} from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { HtmlService } from 'src/app/services/html.service';
-import { first } from 'src/app/utils/rx-operators';
 
-const throwArticleNotFound = (url: string) => {
-  console.log('throw');
-  throw new Error(`Article not found by URL ${url}`)
+interface ArticleViewModel {
+  article: Article | undefined,
+  htmlContent: string
 }
 
 @Component({
@@ -18,15 +28,10 @@ const throwArticleNotFound = (url: string) => {
 })
 export class ArticleViewComponent implements OnInit {
 
-  public article$: Subject<Article> = new Subject<Article>();
+  public article$!: Observable<Article | undefined>;
+  public vm$!: Observable<ArticleViewModel>;
 
-  public articleUrl!: string;
-  public article?: Article;
-  public htmlContent?: string;
-  public articleFullUrl!: string;
-  
   public fetchingArticle!: boolean;
-  public showFrame!: boolean;
 
   constructor(
     private html: HtmlService,
@@ -35,47 +40,49 @@ export class ArticleViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const routing$ = concat(
+      of(this.router.url),
+      this.router.events
+        .pipe(
+          filter(event => event instanceof NavigationEnd),
+          map(event => event as NavigationEnd),
+          // Ignore fragment routing
+          filter(({ url }) => !url.split('#')[1]),
+          map(({ url }) => url)
+        )
+    ).pipe(
+      // The router returns the URL with a leading slash.
+      // We need to get the third element of the route, splitting by slash.
+      // /article/article-1 -> [/, /article, article-1] -> article-1
+      map(url => url.split('/')[2]),
+      // Start "loading flag" when route changes
+      tap(() => this.fetchingArticle = true)
+    );
 
-    this.article$.subscribe(article => {
-      this.article = article;
-    });
+    // Articles are fetched once.
+    const articles$ = this.service.getArticles();
+        
+    this.article$ = combineLatest([routing$, articles$]).pipe(
+      map(([url, articles]) => articles.find(({ url: articleUrl }) => articleUrl === url)),
+      // Stop "loading flag" if the article could not be found.
+      tap(article => !!article || (this.fetchingArticle = false))
+    );
+      
+    const htmlContent$ = this.article$.pipe(
+      filter(article => !!article),
+      mergeMap(article => this.html.getArticleContent(article!)
+        .pipe(
+          // Stop "loading flag" when the content is received
+          finalize(() => this.fetchingArticle = false)
+        )),
+      // Start HTML content stream with empty content
+      // to make vm$ emit even when the first fetched article is not found (null)
+      startWith(``),
+    );
 
-    this.router.events
-      .pipe(
-        filter(event => event instanceof NavigationEnd),
-        map(event => event as NavigationEnd),
-        // Ignore fragment routing
-        filter(({ url }) => !url.split('#')[1]),
-        map(({ url }) => url),
-      )
-      .subscribe(this.initializeArticle);
-
-    const { url } = this.router;
-    const [ base ] = url.split('#');
-    this.initializeArticle(base);
-  }
-  
-  private initializeArticle = (routingUrl: string) => {
-    // The router returns the URL with a leading slash.
-    // We need to get the third element of the route, splitting by slash.
-    // /article/article-1 -> [/, /article, article-1] -> article-1
-    const url = routingUrl.split('/')[2];
-
-    this.article = void 0;
-    this.showFrame = false;
-    this.htmlContent = void 0;
-    this.fetchingArticle = true;
-
-    this.service.getArticles()
-      .pipe(
-        first(({ url: u }) => u === url),
-        tap(article => !!article || throwArticleNotFound(url)),
-        // Propagate article to article subject
-        tap(article => article && this.article$.next(article)),
-        mergeMap(article => this.html.getArticleContent(article!)),
-        finalize(() => this.fetchingArticle = false)
-      ).subscribe(htmlContent => {
-          this.htmlContent = htmlContent;
-      });
+    // Declare the View model stream with the article and its content.
+    this.vm$ = combineLatest([this.article$, htmlContent$]).pipe(
+      map(([article, htmlContent]) => ({article, htmlContent}))
+    );
   }
 }

@@ -11,23 +11,24 @@
       </button>
     </div>
 
-    <article class="article-content" *ngIf="!fetchingArticle; else fetching">
-      <div *ngIf="htmlContent; else notFound">
-
-        <header class="article-header">
-          <!-- We know the article was found here, cause we fetched the HTML content of it -->
-          <h1 class="title primary">{{ article!.title }}</h1>
-          <p class="subtitle">{{ article!.date | date: 'longDate' }}</p>
-          <mat-chip-list>
-            <mat-chip *ngFor="let tag of article!.tags"> {{ tag }} </mat-chip>
-          </mat-chip-list>
-        </header>
-
-        <div class="full-w article-frame" [innerHTML]="htmlContent! | safe"></div>
-
-      </div>
-    </article>
-
+    <ng-container *ngIf="vm$ | async as vm">
+      <article class="article-content" *ngIf="!fetchingArticle; else fetching">
+        <div *ngIf="vm.htmlContent; else notFound">
+  
+          <header class="article-header">
+            <!-- We know the article was found here, cause we fetched the HTML content of it -->
+            <h1 class="title primary">{{ vm.article!.title }}</h1>
+            <p class="subtitle">{{ vm.article!.date | date: 'longDate' }}</p>
+            <mat-chip-list>
+              <mat-chip *ngFor="let tag of vm.article!.tags"> {{ tag }} </mat-chip>
+            </mat-chip-list>
+          </header>
+  
+          <div class="full-w article-frame" [innerHTML]="vm.htmlContent! | safe"></div>
+  
+        </div>
+      </article>
+    </ng-container>
   </mat-drawer-content>
 </mat-drawer-container>
 
@@ -36,6 +37,6 @@
 </ng-template>
 
 <ng-template #notFound>
-  <peach-article-not-found [article]="article">
+  <peach-article-not-found [article$]="article$">
   </peach-article-not-found>
 </ng-template>

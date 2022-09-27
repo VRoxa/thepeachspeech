@@ -1,6 +1,6 @@
 
 <div class="container">
-  <div class="content-not-found" *ngIf="!!article; else noArticle">
+  <div class="content-not-found" *ngIf="article$ | async; else noArticle">
     <p><strong>Whoops! This article doesn't exist anymore.</strong></p>
   </div>
   

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; 
 import { Article, ArticleDto } from '../models/article.model';
-import { map, Observable } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -22,7 +22,9 @@ export class ArticlesService {
             ...article,
             date: new Date(date)
           }));
-        })
+        }),
+        // The HTTP request is only made once.
+        shareReplay(1)
       );
   }
 

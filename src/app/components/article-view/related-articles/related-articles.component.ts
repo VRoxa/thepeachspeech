@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
+import { filter, map, mergeMap, Observable, Subject, tap } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { RoutingService } from 'src/app/services/routing.service';
@@ -26,7 +26,7 @@ const areRelatedArticles = ({ tags: a }: Article, { tags: b }: Article) => {
 })
 export class RelatedArticlesComponent implements OnInit {
 
-  @Input('article') article$!: Subject<Article>;
+  @Input('article') article$!: Observable<Article | undefined>;
   public articles$?: Observable<Article[]>;
 
   constructor(
@@ -35,17 +35,19 @@ export class RelatedArticlesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.article$.subscribe(next => {
-      this.articles$ = this.articlesService.getArticles()
-        .pipe(
+    this.articles$ = this.article$.pipe(
+      filter(article => !!article),
+      mergeMap(next => {
+        return this.articlesService.getArticles().pipe(
           // Filter the current article
-          map(articles => articles.filter(({ url }) => url !== next.url)),
+          map(articles => articles.filter(({ url }) => url !== next!.url)),
           // Filter unrelated articles
           map(articles => articles.filter(
-            article => areRelatedArticles(article, next))
-          ),
+            article => areRelatedArticles(article, next!))
+          )
         );
-    });
+      })
+    );
   }
 
   public enrouteArticle(article: Article): void {

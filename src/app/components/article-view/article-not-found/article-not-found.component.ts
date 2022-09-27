@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 
 @Component({
@@ -8,7 +9,7 @@ import { Article } from 'src/app/models/article.model';
   styleUrls: ['./article-not-found.component.scss']
 })
 export class ArticleNotFoundComponent {
-  @Input() article?: Article;
+  @Input() article$!: Observable<Article | undefined>;
 
   constructor(private router: Router) { }
 
