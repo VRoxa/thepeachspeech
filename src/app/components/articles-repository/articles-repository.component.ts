@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ArticlesService } from 'src/app/services/articles.service';
-import { map } from 'rxjs';
+import { combineLatest, map, startWith, tap } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { valueFromEvent } from 'src/app/utils/rx-factories';
 
@@ -52,7 +52,7 @@ const projectArticles = (articles: Article[]): ArticlesTreeNode[] => {
   templateUrl: './articles-repository.component.html',
   styleUrls: ['./articles-repository.component.scss']
 })
-export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
+export class ArticlesRepositoryComponent implements AfterViewInit {
 
   @ViewChild('filter', { static: true }) filter!: ElementRef<HTMLInputElement>;
 
@@ -62,7 +62,7 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
   );
 
   private treeFlattener = new MatTreeFlattener<ArticlesTreeNode, ArticlesTreeFlatNode>(
-    // Transformer, projects ArticlesTreeNode into ArticlesTreeFlatNode
+    // transformFn, projects ArticlesTreeNode into ArticlesTreeFlatNode
     ({ name, children, article }, level) => ({
       expandable: !!children,
       name: `${name} ${!!children ? `(${children.length})` : ''}`,
@@ -78,36 +78,41 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
   );
 
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-  public nodes!: ArticlesTreeNode[];
 
-  constructor(private articlesService: ArticlesService) { }
-
-  ngOnInit(): void {
-    this.articlesService.getArticles()
-      .pipe(map(projectArticles))
-      .subscribe(nodes => {
-        this.nodes = nodes;
-        this.dataSource.data = this.nodes;
-      });
-  }
+  constructor(private service: ArticlesService) { }
 
   ngAfterViewInit(): void {
-    valueFromEvent(this.filter.nativeElement).subscribe(this.filterNodes);
-  }
-
-  private filterNodes = (searchValue: string) => {
-    const filterValue = searchValue.toLowerCase();
-    const nodes = this.nodes.map(node => {
-      const filtered = node.children!.filter(({ name }) => name.toLowerCase().includes(filterValue));
-      return { 
-        ...node, 
-        children: filtered
-     };
-    });
-
-    this.dataSource.data = nodes.filter(
-      ({ children }) => !!children && children.length > 0
+    const searchTerm$ = valueFromEvent(this.filter.nativeElement).pipe(
+      map(searchTerm => searchTerm.toLowerCase()),
+      startWith(``)
     );
+
+    const nodes$ = this.service.getArticles().pipe(
+      map(projectArticles)
+    );
+
+    combineLatest([nodes$, searchTerm$]).pipe(
+      // Filter articles by search term.
+      map(([nodes, searchTerm]) => {
+        const filteredNodes = nodes.map(node => {
+          const filtered = node.children!.filter(({ name }) => name.toLowerCase().includes(searchTerm));
+          return { 
+            ...node, 
+            children: filtered
+          };
+        });
+        
+        return [filteredNodes, searchTerm] as const;
+      }),
+      // Filter empty groups.
+      map(([nodes, searchTerm]) => {
+        const filteredNodes = nodes.filter(({children}) => !!children && children.length > 0);
+        return [filteredNodes, searchTerm] as const;
+      }),
+      tap(([nodes]) => (this.dataSource.data = nodes)),
+      // Expand all nodes if the searchTerm is not empty.
+      tap(([_, searchTerm]) => !!searchTerm && this.treeControl.expandAll()),
+    ).subscribe();
   }
 
   public hasChild = (_: number, { expandable }: ArticlesTreeFlatNode) => expandable;

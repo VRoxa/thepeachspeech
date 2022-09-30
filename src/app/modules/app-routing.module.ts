@@ -5,9 +5,10 @@ import { ArticlesRepositoryComponent } from '../components/articles-repository/a
 import { HomeComponent } from '../components/home/home.component';
 
 const routes: Routes = [
-  { path: 'article/:link', component: ArticleViewComponent },
+  { path: 'article/:url', component: ArticleViewComponent },
   { path: 'repository', component: ArticlesRepositoryComponent },
   { path: '', component: HomeComponent },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

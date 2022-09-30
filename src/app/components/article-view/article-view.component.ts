@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   combineLatest,
   concat,
@@ -36,7 +36,7 @@ export class ArticleViewComponent implements OnInit {
   constructor(
     private html: HtmlService,
     private service: ArticlesService,
-    private router: Router
+    private route: ActivatedRoute
   ) { }
 
   public get article$() {
@@ -46,23 +46,10 @@ export class ArticleViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    const routing$ = concat(
-      of(this.router.url),
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        map(event => event as NavigationEnd),
-        // Ignore fragment routing
-        filter(({ url }) => !url.split('#')[1]),
-        map(({ url }) => url)
-      )
-    ).pipe(
-      // The router returns the URL with a leading slash.
-      // We need to get the third element of the route, splitting by slash.
-      // /article/article-1 -> [/, /article, article-1] -> article-1
-      map(url => url.split('/')[2]),
+    const routing$ = this.route.paramMap.pipe(
+      map(params => params.get('url')!),
       // Start "loading flag" when route changes
-      tap(() => this.fetchingArticle = true),
-      shareReplay(1)  
+      tap(() => this.fetchingArticle = true)
     );
 
     const article$ = routing$.pipe(
