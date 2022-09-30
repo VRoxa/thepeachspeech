@@ -28,7 +28,15 @@ export class ArticlesService {
       );
   }
 
-  public getArticles(): Observable<Article[]> {
+  public getArticles = (): Observable<Article[]> => {
     return this.articles$;
+  }
+
+  public getArticleBy = (url: string): Observable<Article | undefined> => {
+    return this.articles$.pipe(
+      map(articles => articles.find(
+        ({url: articleUrl}) => url === articleUrl
+      )),
+    )
   }
 }

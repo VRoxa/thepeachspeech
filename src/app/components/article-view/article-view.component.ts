@@ -11,6 +11,7 @@ import {
   of,
   shareReplay,
   startWith,
+  switchMap,
   tap
 } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
@@ -64,13 +65,8 @@ export class ArticleViewComponent implements OnInit {
       shareReplay(1)  
     );
 
-    // Articles are fetched once.
-    const articles$ = this.service.getArticles();
-        
-    const article$ = combineLatest([routing$, articles$]).pipe(
-      map(([url, articles]) => articles.find(
-        ({ url: articleUrl }) => articleUrl === url)
-      ),
+    const article$ = routing$.pipe(
+      switchMap(this.service.getArticleBy),
       // Stop "loading flag" if the article could not be found.
       tap(article => !!article || (this.fetchingArticle = false))
     );
