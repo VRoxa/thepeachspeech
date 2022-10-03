@@ -120,7 +120,7 @@ export class ArticleViewComponent implements OnInit {
         this.router.events
             .pipe(
                 // Filter only navigation end events
-        		filter(event => event instanceof NavigationEnd),
+                filter(event => event instanceof NavigationEnd),
                 map(event => event as NavigationEnd),
                 // Mapping the route to a meaningful URL
         	).subscribe(this.initializeArticle);
@@ -457,15 +457,15 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
 > export type ValuableHtmlElement = HTMLElement & { value: string; };
 > 
 > export const valueFromEvent = <T extends ValuableHtmlElement>(
->        source: T,
->        debounce: number = 200
+>    source: T,
+>    debounce: number = 200
 > ): Observable<string> => {
->        return fromEvent(source, 'keyup').pipe(
->            map(({ currentTarget }) => currentTarget as T),
->            map(({ value }) => value),
->            distinctUntilChanged(),
->            debounceTime(debounce)
->        );
+>    return fromEvent(source, 'keyup').pipe(
+>        map(({ currentTarget }) => currentTarget as T),
+>        map(({ value }) => value),
+>        distinctUntilChanged(),
+>        debounceTime(debounce)
+>    );
 > }
 > ```
 
