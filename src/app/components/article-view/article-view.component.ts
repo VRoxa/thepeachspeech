@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   combineLatest,
-  concat,
   filter,
   finalize,
   map,
   mergeMap,
   Observable,
-  of,
-  shareReplay,
   startWith,
   switchMap,
   tap

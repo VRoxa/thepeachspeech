@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Article, ArticleDto } from '../models/article.model';
 import { map, Observable, shareReplay } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { first } from '../utils/rx-operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,18 +15,16 @@ export class ArticlesService {
   constructor(private http: HttpClient) { }
 
   public fetchArticles(): void {
-    this.articles$ = this.http
-      .get<ArticleDto[]>(environment.dataUri)
-      .pipe(
-        map(articles => {
-          return articles.map(({date, ...article}) => ({
-            ...article,
-            date: new Date(date)
-          }));
-        }),
-        // The HTTP request is only made once.
-        shareReplay(1)
-      );
+    this.articles$ = this.http.get<ArticleDto[]>(environment.dataUri).pipe(
+      map(articles => {
+        return articles.map(({date, ...article}) => ({
+          ...article,
+          date: new Date(date)
+        }));
+      }),
+      // The HTTP request is only made once.
+      shareReplay(1)
+    );
   }
 
   public getArticles = (): Observable<Article[]> => {
@@ -34,9 +33,7 @@ export class ArticlesService {
 
   public getArticleBy = (url: string): Observable<Article | undefined> => {
     return this.articles$.pipe(
-      map(articles => articles.find(
-        ({url: articleUrl}) => url === articleUrl
-      )),
+      first(({url: articleUrl}) => url === articleUrl)
     )
   }
 }

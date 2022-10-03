@@ -35,8 +35,8 @@ export const first = <T>(predicate: Predicate<T>) => {
  * Operator that checks a condition per value emitted, and switches to a new Observable
  * based on the condition result. Each Observable is created from the emitted value.
  * @param condition Condition which Observable should be chosen.
- * @param trueFactory Function that createa an Observable that will be subscribed if condition is true.
- * @param falseFactory Function that createa an Observable that will be subscribed if condition is false.
+ * @param trueFactory Function that creates an Observable that will be subscribed if condition is true.
+ * @param falseFactory Function that creates an Observable that will be subscribed if condition is false.
  * @returns An Observable that proxies to `trueFactory` or `falseFactory`, depending on the result of the `condition` function.
  */
 export const sswitch = <TSource, TResult = TSource>(

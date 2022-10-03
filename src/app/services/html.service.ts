@@ -26,13 +26,11 @@ export class HtmlService {
 
   public getArticleContent(article: Article): Observable<string> {
     const uri = this.getArticleUrl(article);
-    return this.http
-      .get(uri, { responseType: 'text' })
-      .pipe(
-        map(content => parser.render(content)),
-        highlightInlineCode,
-        replaceTocLinks
-      );
+    return this.http.get(uri, { responseType: 'text' }).pipe(
+      map(content => parser.render(content)),
+      highlightInlineCode,
+      replaceTocLinks
+    );
   }
 
   private getArticleUrl({ url }: Article): string {

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { filter, map, mergeMap, Observable, Subject, tap } from 'rxjs';
+import { filter, map, mergeMap, Observable } from 'rxjs';
 import { Article } from 'src/app/models/article.model';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { RoutingService } from 'src/app/services/routing.service';
