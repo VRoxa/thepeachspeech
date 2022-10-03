@@ -1,6 +1,18 @@
 
 <mat-form-field class="filter-input" appearance="outline">
-  <input matInput #filter autocomplete="off">
+  <mat-label>Browse articles</mat-label>
+  <mat-chip-list #tags>
+    <mat-chip *ngFor="let tag of tagsFilter$ | async" (removed)="removeTagFilter(tag)">
+      {{ tag }}
+      <button matChipRemove><mat-icon>cancel</mat-icon></button>
+    </mat-chip>
+    <input 
+      #filter
+      autocomplete="off"
+      [matChipInputFor]="tags"
+      [matChipInputAddOnBlur]="false"
+    >
+  </mat-chip-list>
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 
@@ -11,6 +23,7 @@
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
       <div class="node-content">
         <peach-article-tree-node
+          (tagClick)="addTagFilter($event)"
           [article]="node.article">
         </peach-article-tree-node>
       </div>
