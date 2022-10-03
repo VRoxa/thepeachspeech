@@ -57,5 +57,18 @@
       "Design patterns"
     ],
     "date": "2022-05-26T12:26:59.779Z"
+  },
+  {
+    "title": "Refactoring to reactive programming",
+    "oneliner": "A short journey along the The Peach Speech code-base to refactor it towards a reactive programming approach.",
+    "url": "reactive-programming",
+    "tags": [
+      "Typescript",
+      "Refactoring",
+      "Angular",
+      "Reactive",
+      "RxJS"
+    ],
+    "date": "2022-10-03T14:38:40.587Z"
   }
 ]
