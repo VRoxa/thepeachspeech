@@ -140,7 +140,12 @@
         }
     }
 
-    ::ng-deep pre {
-        width: fit-content;
-    }
+    // ::ng-deep pre {
+    //     width: fit-content;
+
+    //     code {
+    //         max-width: 100%;
+    //         overflow-x: auto;
+    //     }
+    // }
 }

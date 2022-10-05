@@ -121,7 +121,7 @@ export class ArticlesRepositoryComponent implements AfterViewInit {
 
       // Filter articles by tags
       map(([nodes, searchTerm, tagsFilter]) => {
-        const filteredNodes = tagsFilter.length === 0
+        const filteredNodes = !tagsFilter.length
           ? nodes
           : nodes.map(node => ({
             ...node,

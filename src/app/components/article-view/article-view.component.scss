@@ -54,7 +54,7 @@
 
 @media (max-width: 992px) {
   .article-content {
-    margin-left: 1rem;
+    margin: 0 0.5rem;
     width: calc(100% - 1rem);
     white-space: pre-line;
 
@@ -69,6 +69,10 @@
   }
 
   .sidenav {
-    width: 0%;
+    width: 0;
+  } 
+
+  ::-webkit-scrollbar {
+    display: none !important;
   }
 }
