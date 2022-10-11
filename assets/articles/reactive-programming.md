@@ -457,19 +457,19 @@ export class ArticlesRepositoryComponent implements OnInit, AfterViewInit {
 > export type ValuableHtmlElement = HTMLElement & { value: string; };
 > 
 > export const valueFromEvent = <T extends ValuableHtmlElement>(
->    source: T,
->    debounce: number = 200
+>     source: T,
+>     debounce: number = 200
 > ): Observable<string> => {
->    return fromEvent(source, 'keyup').pipe(
->        map(({ currentTarget }) => currentTarget as T),
->        map(({ value }) => value),
->        distinctUntilChanged(),
->        debounceTime(debounce)
->    );
+>     return fromEvent(source, 'keyup').pipe(
+>         map(({ currentTarget }) => currentTarget as T),
+>         map(({ value }) => value),
+>         distinctUntilChanged(),
+>         debounceTime(debounce)
+>     );
 > }
 > ```
 
-There's basically the same problem we had in the `ArticleViewComponent`: we are subscribed to two observables while we only have to provide only single data stream (the collection of `ArticlesTreeNode`, in this case). We have to create an unnecessary state to handle both subscriptions, the `nodes` attribute.  
+There's basically the same problem we had in the `ArticleViewComponent`: we are subscribed to two observables while we only have to provide only a single data stream (the collection of `ArticlesTreeNode`, in this case). We have to create an unnecessary state to handle both subscriptions, the `nodes` attribute.  
 Again, let's combine these two observables into one single data source. The emitted values will be set to the `MatTreeFlatDataSource`, so the view can react on it.
 
 ```typescript
@@ -597,7 +597,7 @@ The data stream is projected from the `ActivatedRoute` into the URL parameter; t
 ---
 
 This refactoring session has been a journey for me, too. It helped me to leverage my reactive programming skills, beyond the usage of *RxJS* and its operators. I've seen all around people who say *RxJS* is easy. Well, *RxJS* makes reactive programming easy; but it is still hard. I think there's a misconception here... Reactive programming can solve some problems very easily – asynchronous data handling, of course; but nowadays, almost everything is asynchronous – but you first have to know it (and master it, sometimes).  
-Getting to a solution that fits the problem is not immediate as it can be using other tools, it requires some time to analyze and think about it. Moreover, is makes code less "universal", since not that many people will understand it – the code will be very elegant, but not that readable even for a developer who is used to reactive programming.
+Getting to a solution that fits the problem is not immediate as it can be using other tools, it requires some time to analyze and think about it. Moreover, it makes code less "universal", since not that many people will understand it – the code will be very elegant, but not that readable even for a developer who is used to reactive programming.
 
 All things being said, I personally will keep mastering reactive programming (specially *RxJS* and it's C# counterpart, [Rx.NET](https://github.com/dotnet/reactive)) until it gets as natural as writing a rudimentary `if` statement.
 
