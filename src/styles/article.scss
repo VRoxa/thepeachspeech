@@ -99,6 +99,27 @@
     color: #75715e;
 }
 
+// Select elements whose id attribute is not empty.
+// and tabindex = "-1".
+// This selects markdown headers.
+::ng-deep *[tabindex="-1"][id]:not([id=""]) {
+    &:hover {
+        // Includes a hash at the end of the header.
+        &::after {
+            content: ' #';
+            font-size: inherit;
+            color: #e6db74;
+            font-weight: bold;
+        }
+
+        cursor: pointer;
+    }
+
+    &:focus-visible {
+        outline: none;
+    }
+}
+
 ::ng-deep table {
     background-color: transparent;
     width: auto;
@@ -148,4 +169,17 @@
     //         overflow-x: auto;
     //     }
     // }
+}
+
+@keyframes highlight-header {
+    0% {
+        background-color: $background-color;
+    }
+    50% {
+        background-color: $accent-color;
+        color: black;
+    }
+    100% {
+        background-color: $background-color;
+    }
 }

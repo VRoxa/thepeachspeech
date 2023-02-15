@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location, ViewportScroller } from '@angular/common';
 import {
   combineLatest,
+  delay,
   filter,
   finalize,
+  first,
+  firstValueFrom,
   map,
   mergeMap,
   Observable,
+  shareReplay,
   startWith,
   switchMap,
   tap
@@ -14,6 +20,7 @@ import {
 import { Article } from 'src/app/models/article.model';
 import { ArticlesService } from 'src/app/services/articles.service';
 import { HtmlService } from 'src/app/services/html.service';
+import { sleep } from 'src/app/utils/utils';
 
 interface ArticleViewModel {
   article: Article | undefined,
@@ -33,7 +40,10 @@ export class ArticleViewComponent implements OnInit {
   constructor(
     private html: HtmlService,
     private service: ArticlesService,
-    private route: ActivatedRoute
+    private router: Router,
+    private route: ActivatedRoute,
+    private location: Location,
+    private scroller: ViewportScroller
   ) { }
 
   public get article$() {
@@ -54,11 +64,13 @@ export class ArticleViewComponent implements OnInit {
       // Stop "loading flag" if the article could not be found.
       tap(article => !!article || (this.fetchingArticle = false))
     );
-      
+
     const htmlContent$ = article$.pipe(
       filter(article => !!article),
       mergeMap(article => this.html.getArticleContent(article!).pipe(
         // Stop "loading flag" when the content is received
+        tap(this.subscribeToHeaders),
+        tap(this.scrollToAnchor),
         finalize(() => this.fetchingArticle = false)
       )),
       // Start HTML content stream with empty content
@@ -70,5 +82,27 @@ export class ArticleViewComponent implements OnInit {
     this.vm$ = combineLatest([article$, htmlContent$]).pipe(
       map(([article, htmlContent]) => ({article, htmlContent}))
     );
+  }
+
+  private subscribeToHeaders = async () => {
+    await sleep(200);
+
+    // Danger levels
+    document
+      .querySelectorAll(`*[tabindex="-1"][id]:not([id=""])`)
+      .forEach(target => {
+        const { id } = target;
+        target.addEventListener('click', event => {
+          event.preventDefault();
+          const url = this.router.url.replace(/^(?<base>[^#]+)(#.*)?/, `$<base>#${id}`);
+          this.location.replaceState(url)
+        })
+      })
+  }
+
+  private scrollToAnchor = async () => {
+    await sleep(500);
+    const anchor = await firstValueFrom(this.route.fragment.pipe(filter(x => !!x)));
+    this.scroller.scrollToAnchor(anchor!);
   }
 }
