@@ -76,6 +76,7 @@ export class ArticleViewComponent implements OnInit {
       // Start HTML content stream with empty content
       // to make vm$ emit even when the first fetched article is not found (null)
       startWith(``),
+      shareReplay(1)
     );
 
     // Declare the view model stream with the article and its content.
